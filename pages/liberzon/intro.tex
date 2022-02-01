@@ -1,0 +1,118 @@
+\section{Introduction}
+\subsection{Optimal control problem}
+
+Ingredients of an optimal control problem:
+\begin{enumerate}
+\item Control system
+\item Cost functional
+\end{enumerate}
+
+\paragraph{Control system} $\xd{} = \func{t,x,u}$
+\begin{itemize}
+\item Generates possible behaviours
+\item Described by ODEs of the form:
+\end{itemize}
+
+\begin{align}
+\xd{} = \func{t,x,u}, \quad x(t_0) = x_0
+\label{eq:control-system}
+\end{align}
+
+\begin{variables}
+x = x(t)	& state, $x \in \R{}^n$\\
+u = u(t)	& control input, $u \in U \subset \R^m$\\
+t			& time\\
+t_0			& initial time\\
+x_0			& initial state
+\end{variables}
+
+\paragraph{Cost functional} $J$
+\begin{itemize}
+\item Associates a cost with each possible behaviour
+\item For a given initial data $(t_0, x_0)$,
+		the behaviours are parametrised by control functions $u$
+\item Assigns a cost value to each admissible control
+\end{itemize}
+
+\begin{align}
+J(u) := \intdt{t_0}{t_f}{ \bfunc{L}{t, x(t), u(t)} }
+		+ K (t_f, x_f)
+\label{eq:cost-functional}
+\end{align}
+
+\begin{variables}
+L				& running cost\\
+K				& terminal cost\\
+t_f				& final/terminal time\\
+x_f := x(t_f)	& final/terminal state
+\end{variables}
+
+Functional: maps a function to another function.\\
+In this case: $J$ maps $u(t) \mapsto \int L(\dots$.\\
+
+\paragraph{Optimal control problem}
+\begin{itemize}
+\item Find a control $u$ that minimises
+	$J(u)$ over all admissible controls
+	(or at least over nearby controls).\\
+	$\rightarrow$ What regularity properties should be
+	imposed on the function
+	$f$ and on the admissible controls $u$,
+	to ensure that the state trajectories of the
+	control system are well defined?
+\item Choosing the \emph{best path} among all paths feasible
+	for the system,
+	with respect to the given cost function $J$.\\
+	$\rightarrow$ Problem is \emph{infinite-dimensional}
+	(space of paths is an infinite-dimensional function space)
+\item \emph{Dynamic} optimisation problem:
+	involves a dynamical system and time
+\end{itemize}~
+
+Simplified problem:
+static, finite-dimensional
+(find a minimum of a given function
+$f:~\R{}^n~\rightarrow~\R{}$).\\
+
+Calculus of variations:
+treats optimisation problems which are
+infinite-dimensional but not dynamic
+
+\subsection{Background on finite-dimensional optimisation}
+Consider:\\
+
+\begin{tabu} to \textwidth{ll}
+Function	& $f: \R{}^n \rightarrow \R{}$\\
+Set			& $D \subset \R{}^n$
+\end{tabu}~\\
+
+$\xopt{} \in D$ is a local minimum of $f$ over $D$,
+if there exists an $\varepsilon > 0$
+such that $\forall x \in D$ satisfying
+$|x - \xopt{}| < \varepsilon$:
+\begin{align}
+\func{\xopt{}} \leq \func{x}
+\label{eq:local-minimum}
+\end{align}
+
+\begin{tcolorbox}
+	\xopt{} is a local minimum of $f$
+	$\quad \Rightarrow \quad$
+	$\func{\xopt{}} \leq \func{x} $ in the sphere of $\varepsilon$
+\end{tcolorbox}
+
+
+\begin{itemize}
+\item If the inequality if strict%
+	\footnote{Strict inequality: inequality
+	has no equality conditions}
+ in \eqn{eq:local-minimum}, $\rightarrow$ strict local minimum.
+\item If \eqn{eq:local-minimum} holds for all $x \in D$,
+		the minimum is a \emph{global} over $D$.
+\end{itemize}
+
+\subsubsection{Unconstrained optimisation}
+\begin{itemize}
+\item Unconstrained optimisation: all $x$ sufficiently
+		near \xopt{} in $\R{}^n$ are in $D$
+\end{itemize}

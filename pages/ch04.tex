@@ -1,0 +1,41 @@
+\classDate{Fr.\\07/12/18}
+\section{Receding Horizon Optimal Control}
+
+So far:
+\begin{center}
+    \begin{tabu} to \columnwidth{cc}
+        \toprule
+        \textbf{NLP}         & \textbf{DP}  \\
+        \midrule
+        finite horizon        & (in)finite horizon\\
+        discrete time        & discrete/continuous\\
+        open loop            & feedback\\
+        ``efficient algo''  & fix point eqn, PDE\\
+        \bottomrule
+    \end{tabu}
+\end{center}~
+
+Now:\\
+\paragraph{Receding horizon optimal control (RHOC)}
+merges advantages of NLP (computability) and DP (feedback, infinite horizon)
+\begin{itemize}
+    \item MPC (model predictive control)
+    \item MHE (moving horizon estimation)
+\end{itemize}
+\paragraph{Motivation} optimal feedback design
+\begin{align*}
+    \min &\intdt{0}{\infty}{f_0 \paren{x,u}}\\
+    \txt{s.t. } \quad & \dot{x} = f(x,u)\\
+                    & u \in \setU{}\\
+                    & x \in \setX{}
+\end{align*}
+solve PDE, fixpoint equation, NLP :\lat{} $\infty$ many decision variables (constraints)
+
+\paragraph{State estimation}
+use all past information (measurements) for estimation \lat{} unbounded data
+
+\input{./pages/04-1-rh-decision-making}
+\input{./pages/04-2-mpc}
+\input{./pages/04-3-mhe}
+
+\cleardoublepage

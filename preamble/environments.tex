@@ -1,0 +1,157 @@
+% Package settings
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable,skins}
+% Enable tcolorbox to work with tikz
+\tcbsetforeverylayer{shield externalize}
+
+% Colours
+\definecolor{defgrn}{RGB}{123, 168, 124}
+\definecolor{burntorange}{RGB}{138, 107, 61}
+\definecolor{navyblue}{RGB}{39, 44, 140}
+\definecolor{greyblue}{RGB}{78, 83, 107}
+\definecolor{darkgreen}{RGB}{77, 133, 78}
+\definecolor{darkred}{RGB}{140, 39, 39}
+\definecolor{babypink}{RGB}{232, 181, 235}
+\definecolor{babyblue}{RGB}{178, 178, 219}
+
+\newcommand*\greenbox[1]{\colorbox{green!10!white}{\hspace{1em}#1\hspace{1em}}}
+\newcommand*\redbox[1]{\colorbox{red!10!white}{\hspace{1em}#1\hspace{1em}}}
+\newcommand*\bluebox[1]{\colorbox{blue!10!white}{\hspace{1em}#1\hspace{1em}}}
+
+% VARIABLES    
+\newenvironment{variables}%        % Variables
+  [1][~~]{%
+  \begin{addmargin}[3em]{3em}
+      #1 
+      \begin{tabular}[t]{>{$}l<{$} @{~-~} l}}
+      {\end{tabular}\\
+      [\belowdisplayskip]
+  \end{addmargin}
+  }
+  
+% THEOREM
+\newtcolorbox[
+    % auto counter,number within=section
+    ]%
+    {theorem}[2][]{
+    colback=white,
+    colbacktitle=burntorange,
+    colframe=burntorange!30!white,
+    arc=0mm,
+    fonttitle=\color{white},
+    enhanced,
+    attach boxed title to top left={yshift=-2mm,xshift=2mm},
+    title=\textsc{Theorem:}~#2,
+    #1
+    }
+    
+% PROBLEM
+\newtcolorbox[
+    % auto counter,number within=section
+    ]%
+    {problem}[2][]{
+    colback=white,
+    colbacktitle=greyblue,
+    colframe=greyblue!30!white,
+    arc=0mm,
+    fonttitle=\color{white},
+    enhanced,
+    attach boxed title to top left={yshift=-2mm,xshift=2mm},
+    title=#2,
+    #1
+    }
+
+% EXAMPLE  
+\newtcolorbox[
+    auto counter,number within=chapter
+    ]%
+    {optExample}[2][]{
+    colback=white,
+    colbacktitle=gray!20!white,
+    colframe=gray!10!white,
+    arc=0mm,
+    fonttitle=\color{blue!10!gray},
+    enhanced,
+    attach boxed title to top left={yshift=-2mm,xshift=2mm},
+    title=\textsc{Ex.}~\thesection\thetcbcounter~#2,
+    #1
+    }
+
+% DEFINITION
+\newtcolorbox[
+    % auto counter,number within=section
+    ]%
+    {definition}[2][]{
+    colback=white,
+    colbacktitle=defgrn,
+    colframe=defgrn!30!white,
+    arc=0mm,
+    fonttitle=\color{white},
+    enhanced,
+    attach boxed title to top left={yshift=-2mm,xshift=2mm},
+    title=\textsc{Def:}~#2,
+    #1
+    }
+
+%\newcommand{\example}[2]{
+%\begin{center}
+%\begin{tcolorbox}
+%    [title=#1,
+%    title filled=false,
+%    colframe=gray,
+%    colback=gray!20!white]
+%    #2
+%\end{tcolorbox}
+%\end{center}
+%}
+  
+
+% % DEFINITIONS ENVIRONMENT
+% % % Create new counter for section
+% \newcounter{definition}[section]
+% % % Define new environment
+% \newenvironment{definition}[1]
+    % {
+    % \refstepcounter{definition}    
+    % \begin{center}
+    % \begin{tcolorbox}
+    % [title=Definition~\thesection.\thedefinition~#1,
+    % title filled=false,
+    % colframe=gray,
+    % colback=gray!10!white]
+    % }
+    % {
+    % \end{tcolorbox} 
+    % \end{center}
+    % }
+
+% % THEOREMS ENVIRONMENT
+% % % Create new counter for section
+% \newcounter{theorem}[section]
+% % % Define new environment
+% \newenvironment{theorem}[1]
+    % {
+    % \refstepcounter{theorem}    
+    % \begin{center}
+    % \begin{tcolorbox}
+    % [title=Theorem~\thesection.\thetheorem~#1,
+    % title filled=false,
+    % colframe=gray,
+    % colback=gray!5!white]
+    % }
+    % {
+    % \end{tcolorbox} 
+    % \end{center}
+%    }
+  
+% \newenvironment{optExample}[1]
+    % {\begin{center}
+    % \begin{tcolorbox}
+    % [title=#1,
+    % title filled=false,
+    % colframe=gray,
+    % colback=white]
+    % }{
+    % \end{tcolorbox} 
+    % \end{center}
+    % }

@@ -1,0 +1,81 @@
+%%REGEX
+% Date ({\D{5}\d{2})\.(\d{2})\.(\d{2})(\d{2})
+%rrep with $1/$2/$4
+
+% #1: file name without extension
+% #2: width in percentage of page text width
+% #3: style options, e.g. \normalsize
+\newcommand{\inkscape}[3][1]{
+        \def\svgwidth{#3\columnwidth}
+        { \footnotesize 
+        \input{./img/#2.pdf_tex}
+        }
+    }
+    
+%% COMMANDS - Formatting
+\newcommand{\hsc}[1]{{\small\MakeUppercase{#1}}}
+\newcommand{\eqn}[1]{(\ref{#1})}
+%% COMMANDS - Typesetting
+\newcommand{\bluetext}[1]{{\color{blue}(#1)}}
+\newcommand{\txt}[1]{\textnormal{#1}}
+\newcommand{\tund}[2]{\ensuremath{{#1}_{\txt{#2}}}}
+\newcommand{\overtext}[2]{\overset{\txt{#1}}{#2}}
+
+%% MATHEMATICAL OPERATORS
+\newcommand{\set}[1]{\ensuremath{\left\lbrace #1 \right\rbrace}}
+\newcommand{\paren}[1]{\ensuremath{\left( #1 \right)}}
+\newcommand{\squareb}[1]{\ensuremath{\left[ #1 \right]}}
+\newcommand{\matr}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\modl}[1]{\ensuremath{\left\lvert #1 \right\rvert}}
+\newcommand{\norm}[1]{\ensuremath{\left\lVert #1 \right\rVert}}
+\newcommand{\inv}[1]{\ensuremath{#1^{-1}}}
+\newcommand{\quadr}[2]{\ensuremath{#1^T #2 #1}}
+\newcommand{\pdein}[2]{\dfrac{\partial #1}{\partial #2}}
+\newcommand{\pde}[1]{\dfrac{\partial}{\partial #1}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\diag}{diag}
+% Integral over time int{lowerbound}{upperbound}{inttegral}
+\newcommand{\intdt}[3]{\ensuremath{\int_{#1}^{#2} #3 ~dt}}
+% Sum over k {lowerbound}{upperbound}
+\newcommand{\sumk}[2]{ \sum_{#1}^{#2} }
+
+%% SYMBOLS
+\def\minux{\min_{u\in\setU{x}}}
+\def\minuk{\min_{u_k\in\setU{k,x_k}}}
+\def\minudot{\min_{u\in\setU{.}}}
+\def\st{\txt{s.t.}}
+\def\ktild{{\tilde{k}}}
+\def\R{\mathbb{R}}
+\def\err{\mathcal{O}}
+\def\lat{\ensuremath{\rightarrow}}
+%\def\inc{\ensuremath{\uparrow}}
+%\def\dec{\ensuremath{\downarrow}
+%\def\mult{\ensuremath{\times}}
+
+%% VARIABLES
+\def\txu{t,x,u}
+\def\txuo{t_0,x_0,u_0}
+\def\txuOpt{t,x^*(t),u^*(t)}
+\def\txuBar{t,x,\overline{u}(t,x)}
+%% VARIABLES - State x
+\newcommand{\setX}[1]{    \IfEq{#1}{}    { \mathcal{X} }
+                                    { \mathcal{X}_{#1} }    }
+\newcommand{\x}[1]{ x_{#1} }
+\newcommand{\xinew}[1]{\xi_{#1}^{\txt{new}}}
+% VARIABLES - Input u
+\newcommand{\setU}[1]{  \IfEq{#1}{} { \mathcal{U} }
+                                    { \mathcal{U} \left( #1 \right) }   }
+\newcommand{\ubar}[1]{    \IfEq{#1}{}    { \overline{u} }
+                                    { \overline{u} \left( #1 \right) }  }
+%% VARIABLES - Cost J, V
+\newcommand{\Jbar}[1]{  \IfEq{#1}{} { \overline{J} }
+                                    { \overline{J} \left( #1 \right) }  }
+\newcommand{\Vbar}[1]{    \IfEq{#1}{}    { \overline{V} }
+                                    { \overline{V}\paren{#1} }  }
+\newcommand{\Vbard}[1]{    \IfEq{#1}{}    { \dot{ \overline{V} } }
+                                    { \dot{\overline{V}}\paren{#1} }    }
+                                    
+%% FORMULAE
+\newcommand{\AxBu}[1]{Ax_{#1} + Bu_{#1}}
+

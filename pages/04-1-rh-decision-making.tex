@@ -1,0 +1,25 @@
+\subsection{Receding Horizon Online Decision Making}
+
+\paragraph{Decision making} $\corresponds$ find feedback $u(x)$ or find state estimate $\hat{x}$; ``principle of chapter 4''
+
+\paragraph{RH decision making}
+(real-time, online) decision making based on a moving (receding) finite-time window of past and future information
+
+\begin{figure}[H]
+    \centering
+    \def\svgwidth{\columnwidth}
+    { \footnotesize
+    \input{./img/rh-dec-making.pdf_tex}
+    }
+\end{figure}
+
+\paragraph{(RH) online decision making}
+:= solve (compute) at each/some time instances a decision problem/optimisation problem (based on the receding horizon information)
+
+\paragraph{History}
+\begin{itemize}
+    \item Economics (1950s), rolling (horizon) plans
+    \item 1963, Propoi: MPC
+    \item 1970, Jazwinski: MHE
+    \item $\geq$ 1980s: process control (MPC)\footnote{processes are slow $\therefore$ plans can be recomputed every minute}
+\end{itemize}

@@ -1,0 +1,416 @@
+\subsection{MPC}
+\begin{itemize}
+    \item ``online (repeated) open loop computations $\corresponds$ feedback''
+    \item repeated open-loop finite-horizon OC policy
+(implemented in a receding horizon fashion)
+\end{itemize}
+
+\begin{optExample}{{1967, Marcus, Lee: Foundation of OC}}
+    ``One technique for obtaining a feedback controller/synthesis from knowledge of open-loop controllers is to measure the current process control state and then compute \textbf{very rapidly} for the open loop control.\\
+    
+    ``The first portion of this [open-loop] function is used during a short time interval, after which a new measurement of the state is made and a a new open loop control function is computed for this measurement.\\
+    
+    ``Then the procedure is repeated.''
+\end{optExample}
+
+\paragraph{Model Predictive Control Scheme} ~\\
+\begin{figure}[H]
+    \centering
+    \tikzsetnextfilename{mpc-scheme-timeline}
+    \begin{tikzpicture}[
+            every node/.append style={inner sep=0mm}
+            ]
+        \def\h{1cm}
+        \node (origin) {} ;
+        \node (k) [right=2.5*\h of origin] {};
+        \node (kd) [right=1.9*\h of k] {};
+        
+        \begin{scope}[note]
+            \node [below=1em of k.center] {$t_i$};
+            \node [below=1em of kd.center] {$t_{i+1} = t_i + \delta$};
+        \end{scope}
+        
+        \begin{scope}[arrow]
+            \draw (origin) -- (kd) -- ++(1.5*\h,0) node (end) {};
+            \node [right=3mm of end] {$t$};
+        \end{scope}
+        
+        \begin{scope}[draw]
+            \draw (k) -- ++(0,-2mm) -- ++(0,4mm);
+            \draw (kd) -- ++(0,-2mm) -- ++(0,4mm);
+        \end{scope}
+    \end{tikzpicture}
+\end{figure}
+
+\begin{variables}
+    T_p    & prediction/planning horizon\\
+    \delta    & sampling interval
+\end{variables}
+
+\textbf{Typical scheme}:
+\begin{enumerate}
+    \item Measure the state $x(t_i)$
+            and initialise it to be the current sate
+    \item Predict the solution
+            \begin{align*}
+                \tund{u}{MPC}\paren{.,x\paren{t_i}}%\\
+                &= \argmin \intdt{t_i}{t_i + T_p}{f_0 \paren{t,x,u}}\\
+                &\qquad + \phi \paren{t_i + T_p, x\paren{t_i + T_p}}\\
+                %
+                \txt{s.t.} \quad
+                \dot{x} &= f \paren{t,u,x}\\
+                x_0 &= x(t_i) \quad    \txt{IC}\\
+                x &\in \setX{}\\
+                u &\in \setU{}
+            \end{align*}%
+    \item Implement $u\paren{t,x\paren{t_i}}$ within the sampling interval, $t \in \squareb{t_i, t_{i+1}}$
+        \lat{} `closed loop'
+    \item Set value at end of sampling period $t_{i+1}$
+    to be the new initial value of the next iteration\\
+    \lat{} step 1 $i \leftarrow i + 1$
+\end{enumerate}
+
+\begin{figure}[H]
+    %\centering
+    \def\svgwidth{0.9\columnwidth}
+    {\scriptsize \input{./img/mpc-scheme-iter1.pdf_tex}}
+\end{figure}
+
+\begin{figure}[H]
+    %\centering
+    \def\svgwidth{\columnwidth}
+    {\scriptsize \input{./img/mpc-scheme-iter2.pdf_tex}}
+%
+\begin{align*}
+    &\vdots\\
+    \Rightarrow \txt{predicted solution} &\neq \txt{closed loop solution}\\
+    \tund{u}{MPC}\paren{t, x\paren{t_i}} &
+\end{align*}
+\end{figure}%
+
+\paragraph{Discussion / Challenges} ~\\
+MPC $\subseteq$ (online) optimisation-based control
+\begin{figure}[H]
+    \centering
+    \tikzsetnextfilename{mpc-opt-in-loop}
+    \begin{tikzpicture}[every node/.append style={font=\footnotesize}]
+        \def\h{1cm}
+        \node [block] (plant) {plant};
+        \node [block,below=0.7*\h of plant.south] (opt) {opt\\algo.};
+        
+        \begin{scope}[arrow]
+            \draw (plant.east) -- ++(0.7*\h,0) |- (opt)
+                            node [pos=0.5,right] {$y\paren{t_k,x_k}$};
+            \draw (opt.west) -- ++(-0.7*\h,0)
+                        |- (plant) node [pos=0.5,left] {$u_k$};
+        \end{scope}
+    \end{tikzpicture}
+\end{figure}
+
+Fast and reliable (feasible) algorithms needed%
+\footnote{fast: opt algo has to be faster than the plant; reliable: algo not allowed to crash}!\\
+
+\paragraph{Sequential/recursive feasibility} ~\\
+``if solution at $t_i$ is feasible, guarantee that there exists
+a solution at $t_{i+1}$''
+
+\begin{gather*}
+    \min \intdt{t_i}{t_i+T_p}{\dots} + \phi \quad \txt{is feasible}\\
+    \Downarrow\\
+    \min \intdt{t_{i+1}}{t_{i+1}+T_p}{\dots} + \phi \quad \txt{feasible?}
+\end{gather*}
+
+\paragraph{Stability of MPC} ~\\
+\textbf{Problem:} predicted trajectory $\neq$ closed-loop trajectory
+
+\begin{figure}[H]
+    \centering
+    \def\svgwidth{0.5\columnwidth}
+    { \footnotesize
+    \input{./img/mpc-stability.pdf_tex}
+    }
+\end{figure}
+
+\classDate{Mo.\\10/12/18\\exercise}
+\textbf{Solution:} ``change/modify objective function, constraints, prediction horizons ...''
+
+%%%%%%%% Original notes from Fr 7/12/18
+% \begin{enumerate}
+%     \item \textbf{Zero-terminal constraint} $x(t_i + T_P) = 0$
+%         \begin{figure}[H]
+%             \centering
+%             \def\svgwidth{0.65\columnwidth}
+%             \input{./img/mpc-stability-ztc.pdf_tex}
+%         \end{figure}
+%     \item \textbf{Terminal set/terminal cost}
+%         \begin{align*}
+%             x(t_i + T_P) \in \setX{}_f
+%         \end{align*}
+%         \begin{figure}[H]
+%             \centering
+%             \def\svgwidth{0.5\columnwidth}
+%             \input{./img/mpc-stability-term-set.pdf_tex}
+%         \end{figure}
+%     \item Choose \textbf{$T_p$ sufficiently large}\\
+%             ``Disadvantage: no. of decision variables increases, more computation power needed''
+%     \item (Terminal set-free, terminal cost-free,\\
+%             ... etc.)
+% \end{enumerate}
+%%%%%%%%%%%%
+
+\classDate{Fr.\\14/12/18}
+
+% \begin{itemize}
+%     \item Terminal set based conditions/MPC schemes
+%     \item Terminal set free approaches
+% \end{itemize}~ 
+
+\begin{itemize}
+    \item Terminal set based conditions/MPC schemes
+            \begin{enumerate}
+                \item Terminal set constraint\\
+                        $x(t_i + T_p) \in \setX{f}$
+                        \begin{figure}[H]
+                            \centering
+                            \def\svgwidth{0.5\columnwidth}
+                            { \footnotesize
+                            \input{./img/mpc-stability-term-set.pdf_tex}
+                            }
+                        \end{figure}
+                \item Zero terminal state constraint\\
+                        Special case of the above, where 0 is the desired equilibrium point, $x(t_i+T_p) = 0$
+                        \begin{figure}[H]
+                            \centering
+                            \def\svgwidth{0.5\columnwidth}
+                            { \footnotesize
+                            \input{./img/mpc-stability-ztc.pdf_tex}
+                            }
+                        \end{figure}
+            \end{enumerate}
+    \item Terminal set free approaches\\
+            e.g. choose \textbf{$T_p$ sufficiently large}\\
+            Disadvantage: no. of decision variables increases, more computation power needed, $T_p$ difficult to quantise
+\end{itemize}
+
+\begin{theorem}{A stability theorem}{}
+    Consider 
+    \begin{align*}
+        V \paren{  x(t_i) }
+        = \min  & \intdt{t_i}{t_i+T_p}{ f_0 \paren{x(t), u(t)} } \\
+                    &+ \phi \paren{ x\paren{ t_i + T_p } }\\
+        \st \quad   & \dot{x}(t) = f \paren{ x(t), u(t) }, \\
+                    &\qquad t \in [ t_i, t_i + T_p ]\\
+                    & u(t) \in \setU{}\\
+                    & x(t) \in \setX{}\\
+                    & \txt{IC } x(t_i)\\
+                    & x\paren{ t_i + T_p } \in \setX{f}
+    \end{align*}
+    
+    which is solved at each sampling time $t_i$, $t_{i+1} = t_i + \delta$
+    and implemented in a receding horizon fashion.\\
+     
+\end{theorem}
+
+\begin{theorem}{(cont.)}{}
+    Suppose
+    \begin{itemize}
+        \item $f(0,0) = 0$\\
+                $f_0$, $\phi$ are positive definite\\
+                $\phi \in C^1$
+        \item $V$ well-defined in a set $\setX{0} \subseteq \R^n$ of initial conditions, where the problem is feasible.\\
+                $V \in C^1$ in (interior) of $\setX{0}$\\
+                $V$ positive definite
+        \item $0 \in \setX{f} \subseteq \setX{0} \subseteq \setX{}$
+        \item There exists a `local feedback controller' $k(x)$ such that
+                \begin{enumerate}
+                \renewcommand{\labelenumi}{\bfseries A\arabic{enumi}.}
+                    \item $k(x) \in \setU{}, x \in \setX{}$
+                    \item $\dot{x} = f \paren{ x, k(x) }$ renders $\setX{f}$ invariant, i.e.
+                        \begin{align*}
+                            x(0) &\in \setX{f}\\
+                            x(t) &\in \setX{f}, t>0
+                        \end{align*}
+                    \item
+                        \begin{align*}
+                            \dot{\phi}(x)   &= \nabla \phi^T (x) f \paren{ x, k(x) } \\
+                                            &\leq - f_0 \paren{ x, k(x) } \qquad
+                        \end{align*}
+                \end{enumerate}
+    \end{itemize}~
+    
+    $\Rightarrow$ Then the MPC scheme is recursively  feasible and converges $x(t_i) \lat{} 0$, $i \lat{} \infty$ \bluetext{and the MPC closed loop is asymptotically stable for $\delta \lat{} \infty$} 
+\end{theorem}
+
+\paragraph{Proof} ~\\
+\begin{figure}[H]
+    \centering
+    \inkscape{mpc-feas-proof}{.8}
+\end{figure}
+
+\begin{enumerate}
+    \renewcommand{\theenumi}{\alph{enumi}}
+    \renewcommand{\labelenumi}{\theenumi )}
+    \item Recursive feasibility
+    \item Convergence
+\end{enumerate}~
+
+\paragraph{a) Recursive feasibility}
+OCP is feasible for $x(t_i) = $ IC\\
+$\Rightarrow$ OCP is feasible for  $x(t_{i+1}) = $ IC.
+
+\begin{figure}[H]
+    \centering
+    \inkscape{mpc-sets}{.6}
+\end{figure}
+
+Candidate solution (suboptimal, feasible solution at $t_{i+1}$:
+\begin{align*}
+    \nu \paren{ t, x \paren{ t_{i+1} } } &= \left\lbrace
+        \begin{array}{l>{t \in }l}
+            u^*(t)                         & \squareb{ t_i + \delta, t_i + T_p }\\
+            \tilde{u} = k \paren{ x(t) }   & \squareb{ t_i + T_p, t_{i+1} + T_p }
+        \end{array} \right.
+\end{align*}
+
+We have:
+\begin{align*}
+    x \paren{ t_{i+1} + T_p } &\in \setX{f} \qquad &\because (A2)\\
+    \nu \paren{ t_i, x \paren{ t_{i+1} } } &\in \setU{} &\because (A1)
+\end{align*}~
+
+$\Rightarrow$ recursive feasibility \\
+(state constraints ok, since $\setX{f}$ is invariant and $\setX{f} \subseteq \setX{}$)
+
+\paragraph{b) Convergence} $x(t_i) \lat{} 0$
+\def\colRed{\color[rgb]{0.725,0.047,0.278}}
+\def\colBlue{\color[rgb]{0.047,0.133,0.725}}
+\def\colPurple{\color[rgb]{0.633, 0.064, 0.658}}
+\begin{align*}
+    V \paren{ x \paren{ t_{i+1} } }
+    &\overtext{by def./opt.}{\leq} 
+    {\colBlue
+        V \paren{ x \paren{ t_{i+1}, \nu } }
+    }
+    \overset{?}{<}
+    \colRed V \paren{ x \paren{ t_i } }\\
+    %
+    \colRed V \paren{ x\paren{ t_i } }
+    &= \colRed \intdt{t_i}{t_i + T_p}{
+        f_0 \paren{ x^*, u^* }
+        }\\
+        &
+        \colRed \quad
+        + \phi \paren{
+            x^*\paren{ t_i + T_p }
+            }\\
+    \colBlue V \paren{ x\paren{t_{i+1}}, \nu } & \colBlue =
+        \intdt{t_{i+1}}{t_i + T_p}{
+        f_0(x^*,u^*)
+        } \\
+        & \colBlue \quad + \intdt{t_i + T_p}{t_{i+1}+T_p}{ f_0 (\tilde{x}, \tilde{u}) }\\
+        & \colBlue \quad + \phi \paren{ \tilde{x} \paren{ t_{i+1} + T_p } }
+\end{align*}
+
+\begin{figure}[H]
+    \centering
+    \inkscape{mpc-convergence}{1}
+\end{figure}
+
+${\colBlue V(x(t_{i+1}, v) } <
+{\colRed V(x(t_i)) }$ if\\
+endpiece area $<$ cost difference
+\begin{align*}
+    {\colBlue \intdt{t_i + T_p}{t_{i+1}+T_p}{ f_0 (\tilde{x}, \tilde{u}) } }
+    &<
+    {\colRed \phi \paren{ x^* \paren{ t_{i} + T_p } } }\\
+    & \quad -
+    {\colBlue
+        \phi \paren{ \tilde{x} \paren{ t_{i+1} + T_p } }
+    }
+\end{align*}
+
+${\colBlue V \paren{ x(t_{i+1}), \nu } }
+= {\colRed V( x(t_i) )} + $ Rest
+{
+\scriptsize
+\begin{align*}
+      &
+      \colBlue{}
+      V(x(t_{i+1}), \nu)\\
+    = & 
+    \colBlue{}
+    {
+    \colPurple{}
+    \intdt{t_{i+1}}{t_i+T_p}{f_0(x^*,u^*)}
+    }
+    +
+    \intdt{t_i+T_p}{t_{i+1}+T_p}{f_0(\tilde{x},\tilde{u})}
+    + \phi \paren{ \tilde{x} \paren{ t_{i+1} + T_p } }\\
+    & {
+        \colRed +\intdt{t_i}{t_{i+1}}{f_0 (x^*,u^*)}
+        }
+        - \intdt{t_i}{t_{i+1}}{f_0 (x^*,u^*)}\\
+    & {
+        \colRed +
+        \phi \paren{ x^*(t_i + T_p) }
+        }
+        - \phi \paren{ x^*(t_i + T_p) }
+\end{align*}
+}%
+%
+\begin{align*}
+    { \colBlue V\paren{ x(t_{i+1}, \nu} }
+    \leq
+    \colRed V(x(t_i))
+        & \colBlue + \phi \paren{ \tilde{x} \paren{ t_{i+1} + T_p } }\\
+        & \colRed - \phi \paren{ x^*(t_i + T_p) }\\
+        & \colBlue + \intdt{t_i+T_p}{t_{i+1}+T_p}{f_0(\tilde{x},\tilde{u})}
+\end{align*}
+
+If
+${\colBlue \phi \paren{ \tilde{x}  \dots } }
+{ \colRed - \phi \paren{ x^* \dots } }
+{ \colBlue + \intdt{t_i+T_p}{t_{i+1}+T_p}{f_0 \dots } } \leq 0$ (A3)
+
+\paragraph{Remark}
+\begin{gather*}
+    \begin{align*}
+        \min \sumk{j=k}{k+N_p-1}
+        f_0 \paren{ x(j), u(j) }
+        + \phi \paren{ x \paren{ k + N_p } }
+    \end{align*}\\
+    \begin{align*}
+        \st{} \quad
+        x(j+1) &= f( x(j), u(j)),\\
+        &\quad j = k, \dots, k + N_p - 1\\
+        u(j) &\in \setU{}\\
+        x(j) &\in \setX{}\\
+        \txt{IC } &= x(k)\\
+        &\quad \txt{current state of the plant}\\
+        x(k+N_p) &\in \setX{}
+    \end{align*}
+\end{gather*}
+
+\paragraph{Stability proof} see exercise\\
+\begin{align}
+    x_k \in \setX{f} &\Rightarrow x_{k+1} \in \setX{f}\\
+        &\qquad x_{k+1} = f ( x_k, \overline{k}(x_k) ) \nonumber\\
+    x_k \in \setX{f} &\Rightarrow \overline{k} (x_k) \in \setU{}\\
+    \phi(x_{k+1}) - \phi(x_k) &\leq -f_0 (x_k, \overline{k}(x_k))
+\end{align}
+
+$\Rightarrow$ parametrised, time-varying NLP
+\begin{align*}
+    \min \quad  & f(u,p) \qquad p = x(k)\\
+    \st \quad   & g(u,p) \leq 0
+\end{align*}
+
+\paragraph{Pros and cons of MPC}
+\begin{itemize}
+    \item easy to handle state and input constraints
+    \item good model needed
+    \item fast and reliable algorithm needed
+\end{itemize}
+
+\classDate{Mo.\\17/12/18\\exercise}
+~\vspace{1em}\\

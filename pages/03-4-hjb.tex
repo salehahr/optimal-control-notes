@@ -1,0 +1,271 @@
+\subsection{Continuous time, finite horizon DP (HJB theory)}
+HJB: Hamilton-Jacobi-Bellman%
+%
+\subsubsection{Problem formulation}
+\begin{optExample}{Problem setup}
+\begin{align}
+\min_{u(.)} & \intdt{t_0}{t_f}{ f_0 \paren{\txu} } + \phi \paren{t_f, x_f} 
+\end{align}
+\begin{alignat*}{6}
+\st{} \quad&&
+  \dot{x} &= f \paren{\txu} &&t \in [t_0, t_f]     \\
+&& u(t)    &\in \setU{t, x(t)} \subset \R^q\\
+&&~ u &\txt{ piecewise continuous}
+\end{alignat*}
+\end{optExample}
+
+\begin{itemize}
+\item Optimal cost to go
+    \begin{align}
+    J^* \paren{t_1, x_1} = \min_{u(.)}
+        \intdt{t_1}{t_f}{ f_0 \paren{\txu} } + \phi \paren{x_f}
+    \end{align}
+\item Value function
+    \begin{align*}
+    J \paren{t_0,x)} &= V(x)\\
+    \\
+    J \paren{t_0,x_0} 
+        &\overtext{Def.}{=}
+        \min \intdt{t_0}{t_f}{ f_0 \paren{\txu} } + \phi \paren{x_f}\\
+        &= \intdt{t_0}{t_f}{ f_0 \paren{\txuOpt} } + \phi \paren{x_f^*}\\
+        \begin{split}
+            &= \intdt{t_0}{t_1}{ f_0 \paren{\txuOpt} } \\
+        &\quad + \underbrace{ \intdt{t_1}{t_f}{ f_0 \paren{\txuOpt} } }_{\txt{PoO } J \paren{t_1,x_1} }
+        \end{split}\\
+        &= \intdt{t_0}{t_1}{ f_0 \paren{\txuOpt} } + J \paren{t_1,x_1}\\
+    \intertext{PoO as a formula:}
+    J \paren{t_0,x_0}
+        &= \min_{u} \set{ \underbrace{\intdt{t_0}{t_1}{ f_0 \paren{\txu} }}_{\txt{note\footnotemark}} + J \paren{t_1,x_1} }
+    \end{align*}
+    \footnotetext{'DP recursion' but not as useful as in discrete-time
+    since $\intdt{t_0}{t_1}{\dots}$}
+\end{itemize}
+
+\subsubsection{Principle of optimality}
+\paragraph{Idea} Infinitesimal version of the PoO:
+\def\valti{t_0 + \Delta t}
+\begin{gather*}
+    \begin{align*}
+        t_1 = \valti, \quad \Delta t \rightarrow 0,
+        ( J \in C^1 )
+    \end{align*} \\
+    ~\\
+    \begin{alignat*}{2}
+    & J \paren{t_0,x_0}\\
+    =& \min_{u(.)} \set{
+        \intdt{t_0}{\valti}{f_0 \paren{\txu}}
+        + \underbrace{
+            J \paren{\valti, x \paren{\valti}}
+            }_{%
+            g \paren{\valti{}}, \txt{ note}\footnotemark
+            }
+        }\\
+    =& \min_{u(.)} \left\lbrace
+        f_0 \paren{\txuo}\Delta t
+        + J \paren{\txuo} \right.\\
+        &+  \squareb{
+                \pdein{J \paren{\txuo}}{t}
+                + \pdein{J \paren{\txuo}}{x}f \paren{\txuo}
+                }
+            \Delta t\\
+        &+ \left.\err(\Delta t^2)
+        \right\rbrace\\
+    \end{alignat*}
+\end{gather*}%
+    %
+Divide by $\Delta t$:
+    \begin{alignat*}{2}
+    \cancel{J \paren{t_0,x_0}}
+        &=& \min_{u(.)} &\left\lbrace
+        f_0 \paren{\txuo} + \cancel{J \paren{\txuo}} \right.\\
+        &&&+ \pdein{J \paren{\txuo}}{t} \\
+        &&&+ \pdein{J \paren{\txuo}}{x}f \paren{\txuo}\\
+        &&&+ \left. \err(\Delta t) \right\rbrace\\
+    0
+        &=& \min_{u(.)} & \left\lbrace
+        f_0 \paren{\txuo} + \pdein{J \paren{\txuo}}{t} \right.\\
+        &&& + \pdein{J \paren{\txuo}}{x}f \paren{\txuo} \\
+        &&& + \left. \err(\Delta t) \right\rbrace\\
+    \end{alignat*}%
+$\Delta t \rightarrow 0$:
+\begin{alignat*}{3}
+& - \pdein{J \paren{t_0,x_0}}{t}\\
+    =& \min_{u(.)}  \set{
+    f_0 \paren{\txuo}
+    + \pdein{J \paren{\txuo}}{x}f \paren{\txuo}
+    }      
+    \numberthis
+    \label{eq:hjb}
+    \end{alignat*}
+    \footnotetext{$g \paren{\valti} = g(t_0) + \dot{g}(t_0)\Delta t + \err(\Delta t^2)$}%
+%
+\subsubsection{Hamilton-Jacobi-Bellman equation}
+PDE, nonlinear\footnote{nonlinear due to $\min \dots$}
+\begin{gather}
+\begin{align}
+&- \pdein{J \paren{t_0,x_0}}{t} \nonumber \\
+    = &\min_{u(.)}  \set{
+    f_0 \paren{\txuo}
+    + \pdein{J \paren{\txuo}}{x}f \paren{\txuo}
+    }
+\tag{\ref{eq:hjb}} 
+\end{align}\\
+    J \paren{t_f,x} = \phi \paren{t_f,x}
+    \label{eq:hjb-final}
+\end{gather}
+    
+\begin{figure}[H]
+Integration backwards in time.
+    \centering
+    \def\svgwidth{\columnwidth}
+    \footnotesize
+    \input{./img/integration-backwards.pdf_tex}
+    \label{fig:integration-backwards}
+\end{figure}
+
+\subsubsection{Verification theorem}
+\begin{theorem}{necessity}
+If $J \in C^1$, then $J$ is a solution
+of the HJB equation \eqn{eq:hjb}.
+\end{theorem}
+
+\begin{theorem}{{sufficiency, verification theorem}}
+Suppose $\Jbar{t,x} \in C^1$, and 
+    \begin{align}
+    - \pdein{\Jbar{t,x}}{t} &= \minux{} \left\lbrace f_0 \paren{\txu} \right. \nonumber \\
+    &\quad \left. + \pdein{\Jbar{\txu}}{x} f \paren{\txu} \right\rbrace \tag{\ref{eq:hjb}} \\
+    J \paren{t_f,x} &= \phi \paren{t_f,x}
+    \tag{\ref{eq:hjb-final}}\\
+    \ubar{t,x} &= \argmin \left\lbrace
+        f_0 \paren{\txu} \right. \nonumber\\
+        & \quad \left. + \pdein{\Jbar{\txu}}{x}f \paren{\txu} \right\rbrace
+    \end{align}
+Then $\Jbar{} = J$ and $\ubar{}$ is the (an) optimal feedback.
+\end{theorem}
+
+\paragraph{Proof:}
+\begin{align*}
+    g(t_1) - g(t_0) = \intdt{t_0}{t_1}{\dot{g}(t)}
+\end{align*}
+Find theorem of calculus.\\
+
+\paragraph{Step 1} $\Jbar{} \geq J$
+\begin{align*}
+- \pdein{\Jbar{t,x}}{t}
+        &= \minux{} \left\lbrace f_0 \paren{\txu} \right. \\
+        &\quad \left. + \pdein{\Jbar{\txu}}{x}f \paren{\txu} \right\rbrace \\
+        &= f_0 \paren{\txuBar} \\
+        &\quad + \pdein{\Jbar{\txuBar}}{x}f \paren{\txuBar} \\
+-\dot{\Jbar{}}(t,x)
+        &= f_0 \paren{\txuBar}\\
+\end{align*}
+Integrate from $t_0$ to $t_f$:
+\begin{align*}
+\Jbar{t_0,x_0}
+        &= \intdt{t_0}{t_f}{f_0 \paren{\txuBar}} + \Jbar{t_f,x_f}\\
+%\Jbar{t_0,x_0}
+        &= \intdt{t_0}{t_f}{f_0 \paren{\txuBar}} + \phi \paren{t_f,x_f}
+\end{align*}
+$\therefore \Jbar{}$ indeed represents the cost to go.
+
+\paragraph{Step 2} $\Jbar{} \leq J, \forall~u(t,x) \in \setU{t,x}$
+\begin{align*}
+    - \pdein{\Jbar{t,x}}{t}
+        &\leq f_0 \paren{\txu} + \pdein{\Jbar{\txu}}{x} f \paren{\txu} \\
+-\dot{\Jbar{}}(t,x)
+        &\leq f_0 \paren{\txu}
+\end{align*}%
+%
+Integrate from $t_0$ to $t_f$:
+\begin{align*}
+\Jbar{t_0,x_0}
+        &\leq \intdt{t_0}{t_f}{f_0 \paren{\txu}} + \Jbar{t_f,x_f}\\
+\Jbar{t_0,x_0}
+        &\leq \intdt{t_0}{t_f}{f_0 \paren{\txu}} + \phi \paren{t_f,x_f}\\
+        &\qquad \forall~u(t,x) \in \setU{t,x}, \txt{note\footnotemark}\\
+\Jbar{t_0,x_0}
+        &\leq J \paren{t_0,x_0}
+\end{align*}
+\footnotetext{Holds also for the optimal feedback $u^*$}
+
+$\ubar{}$ is optimal, because $(\leq) \rightarrow (=)$.
+
+\paragraph{Remarks}
+\def\uval{\overline{u} \left( t,x,\frac{\partial \overline{J}}{\partial x} \right)}
+\begin{itemize}
+\item Solving HJB \eqn{eq:hjb} is in general hard
+    (analytically + computationally%
+    \footnote{$\dim(x) \leq 10$})
+\item Sometimes helpful:
+    \begin{align}
+    \txt{opt FB } &= \uval\\
+    \ubar{t,x,\lambda} &= \argmin \set{
+        f_0 \paren{\txu} + \lambda^Tf \paren{\txu}
+    }
+    \label{eq:hjb-umin-lambda}\\
+    - \pdein{\Jbar{}}{t}
+        &= f_0 \paren{t,x,\uval} \nonumber\\
+        &\quad    + \underbrace{\pdein{\Jbar{t,x}}{x}}_{\lambda^T} f \paren{t,x,\uval}
+            \label{eq:hjb-djdt}
+    \end{align}
+\end{itemize}
+
+\paragraph{Example: LQR}
+\begin{align*}
+    \min    & \intdt{t_0}{t_f}{ x^T Q X + u^T R u}
+                    + x_f^T S_f x_f,
+                    \quad R >0, S_f > 0\\
+    \st     & \quad \dot{x} = Ax + Bu
+\end{align*}~
+
+Find optimal feedback $\ubar{t,x}$
+\begin{align*}
+    \ubar{t,x} &= \argmin \set{ x^T Q X + u^T R u + \lambda^T(Ax + Bu) }
+    \tag{\ref{eq:hjb-umin-lambda}}
+\end{align*}
+\begin{align*}
+    \pde{u} \left( x^T Q X + \ubar{}^T R \ubar{} + \lambda^T(Ax + B\ubar{}) \right) &= 0^T\\
+    2R\ubar{} + B^T\lambda &= 0\\
+    \ubar{\lambda} & = -\frac{1}{2} R^{-1} B^T \lambda
+\end{align*}
+\begin{align*}
+    - \pdein{\Jbar{}}{t}
+        &= x^T Q x + \frac{1}{4} \lambda^T B \inv{R} B^T \lambda
+            + \lambda^T A x\\
+            &\quad + \lambda^T B ( -\frac{1}{2} R^{-1} B^T \lambda )
+    \tag{\ref{eq:hjb-djdt}}\\
+        &= x^T Q x - \frac{1}{4} \lambda^T B \inv{R} B^T \lambda
+            + \lambda^T A x
+            \numberthis \label{eq:lqr-djdt}\\
+%        &= x^T Q x - \frac{1}{4} \pdein{\Jbar{}}{x} B \inv{R} B^T \left( \pde{\Jbar{}}{x} \right)^T
+%            + \pdein{\Jbar{}}{x} A x
+%            \numberthis \label{eq:lqr-djdt}
+\end{align*}%
+%
+\begin{align*}
+    \Jbar{t_f,x} &= x^T S_F x
+    \tag{\ref{eq:hjb-final}}\\
+    \txt{We try:} \quad \Jbar{t,x} &= x^T S(t) x, \txt{ with}\\
+        \pdein{\Jbar{}}{t} &= x^T\dot{S}(t)x\\
+        \pdein{\Jbar{}}{x} &= 2x^T S(t)= \lambda^T\\
+        & \rightarrow \txt{ plug into } -\pdein{\Jbar{}}{t} \txt{ in } \eqn{eq:lqr-djdt}
+\end{align*}
+\begin{align*}
+    -x^T \dot{S}(t) x
+        &= x^T Q x - \frac{4}{4} x^T S(t) B \inv{R} B^T S(t) x\\
+        &\quad + 2 x^T S(t) A x \quad \forall ~ x\\
+    0   &= x^T \underbrace{ \paren{\dot{S}(t) + Q - S(t) B \inv{R} B^T S(t) + 2 S(t)A } }_{\overset{!}{=} 0} x
+\end{align*}%
+%
+%
+Ricatti equation (ODE)\footnote{PDE is converted into an ODE}:
+\begin{align*}
+    0 &= \dot{S}(t) + Q - S(t) B \inv{R} B^T S(t) + 2 S(t)A \numberthis
+    \label{eq:ricatti}\\
+    S(t_f) &= S_f \numberthis
+\end{align*}%
+%
+\begin{align*}
+    \ubar{\lambda} & = -\frac{1}{2} \inv{R} B^T \lambda
+    = - \inv{R} B^T S(t) x
+\end{align*}

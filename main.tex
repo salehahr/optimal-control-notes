@@ -1,0 +1,20 @@
+\documentclass[10pt,twocolumn,twoside]{scrartcl}
+%% PREAMBLE
+    \input{./preamble/preamble}
+    \input{./preamble/environments}
+    \input{./preamble/macros}
+    \input{./preamble/includeonly}    
+    
+\begin{document}
+    {\fontfamily{lmss}\selectfont
+    \include{./pages/cover}
+    }
+    \include{./preamble/toc}
+
+\clearpage
+\pagenumbering{arabic}
+    \include{./pages/ch01}
+    \include{./pages/ch02}
+    \include{./pages/ch03}
+    \include{./pages/ch04}
+\end{document}

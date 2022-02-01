@@ -1,0 +1,11 @@
+# tex
+build/*
+*.log
+
+# images
+*.md5
+*.dpth
+
+# vim
+*.swp
+*.latexmain

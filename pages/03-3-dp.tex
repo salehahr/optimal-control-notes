@@ -1,0 +1,361 @@
+\subsection{Discrete time, infinite horizon DP}
+\subsubsection{Problem formulation}
+\begin{optExample}{Problem setup}
+\begin{align}
+    \min    & \sum_{k=0}^{N=\infty} f_0 \paren{x_k,u_k}
+\end{align}
+\begin{alignat*}{6}
+\st{} \quad
+&& \x{k+1}  &= f \paren{x_k,u_k}\\
+&& u_k      &\in \setU{x_k}
+\end{alignat*}
+\begin{alignat}{4}
+\intertext{(Optimal) cost to go}
+    & & J \paren{k,x_k} &=&& \min \sum_{j=k}^{\infty} f_0 \paren{x_j, u_j}\\
+\intertext{Value function}
+    & &     V(x) &=&& J \paren{0,x}
+\end{alignat}
+\end{optExample}
+
+\paragraph{Remark:} "Cannot go backwards starting from infinity!"~\\
+
+\classDate{Mo.\\26/11/18}
+\begin{itemize}
+    \def\pink{\color[rgb]{1,0.39215686,0.74509804}}
+    \def\blue{\color[rgb]{0.20392157,0.54901961,0.78431373}}
+    
+\item N finite $(N<\infty)$:
+    \begin{align*}
+    J \paren{k,x_k} = \min_{u \in~ \setU{x}}
+        \set{ f_0 \paren{x, u} + J \paren{k+1, f \paren{x,u}} }
+    \end{align*}
+    \begin{figure}[H]
+    \centering
+    \def\svgwidth{\columnwidth}
+    \input{./img/dp-finite.pdf_tex}
+    \begin{align*}
+    {\blue J \paren{k,x_k} } \neq \pink V(\tilde{x}_0)
+    \end{align*}
+    \end{figure}    
+    
+\item N infinite $N = \infty$
+
+    \begin{figure}[H]
+    \centering
+    \def\svgwidth{\columnwidth}
+    \input{./img/dp-infinite.pdf_tex}    
+    \begin{gather*}
+    {\blue J \paren{k,x_k} } = \pink V(\tilde{x}_0)\\
+    \txt{time-invariant case!}
+    \end{gather*}
+    \end{figure}
+    
+    $J \paren{k,x}$ replaced by $V(x)$ in DP recursion:
+    \begin{align}
+    \intertext{DP equation | Bellman equation}
+    V \paren{x} = \minux{} \set{ f_0 \paren{x,u} + V \paren{f \paren{x,u}} }
+    \label{eq:dp-bellman}
+    \end{align}
+\end{itemize}
+
+\begin{theorem}{(necessity)}
+Consider:
+\def\funcval{ f_0 \paren{x,u} + \Vbar{f \paren{x,u}} }
+\begin{align}
+\Vbar{x} &= \minux{} \set{ \funcval }
+    \label{eq:dp-vbar}\\
+\ubar{x} &= \argmin \set{ \funcval }
+    \label{eq:dp-ubar}
+\end{align}
+
+Suppose $V$ in problem setup exists, then $V$ solves
+$\Vbar{x}$ in \eqn{eq:dp-vbar} (and the optimal feedback solves $\ubar{x}$ in  \eqn{eq:dp-ubar})\\
+
+\paragraph{Remark}
+    \begin{itemize}
+    \item Not sufficient!
+    \item DP equation is a fix point equation
+            (in a function space) in the value function
+            \begin{align*}
+            \Vbar{} = \overline{f} \left( \Vbar{} \right)
+            \end{align*}
+    \end{itemize}
+\end{theorem}
+
+\paragraph{Value function iteration and policy iteration algorithm}
+\begin{align}
+\min \sumk{k=0}{N = \infty} \alpha^k f_0 \paren{x_k,u_k}, \quad \alpha \in (0,1)
+\end{align}
+\begin{alignat*}{6}
+\st{} \quad
+&& \x{k+1} &= f \paren{x_k,u_k}\\
+&& u_k        &\in \setU{x_k}
+\end{alignat*}
+\begin{variables}
+\alpha    & discount factor (forgetting)
+\end{variables}
+
+\paragraph{Assumption}
+Suppose $\modl{f_0 \paren{x,u}} \leq M \quad \forall ~x, u$.
+\begin{align*}
+\sum \alpha^k f_0 \paren{x_k,u_k} \leq \sumk{k=0}{N=\infty} \alpha^k M
+    = M \dfrac{\alpha}{1-\alpha}
+\end{align*}
+
+\paragraph{Notice}
+\begin{align*}
+J \paren{k,x_k} &= \min \sum_{j=k}^{\infty} \alpha^j f_0 \paren{x_j,u_j}\\
+    &= \alpha^k \min \sum_{j=0}^{\infty} \alpha^j f_0 \left( \tilde{x}_j, \tilde{u}_j \right) \\
+    &= \alpha^k V \paren{\tilde{x}_0} = \alpha^k V \paren{x_k}\\
+\alpha^k V \paren{x}
+    &= \min \set { f_0 \paren{x,u} \alpha^k + \alpha^{k+1} V \paren{f \paren{x,u}} }\\
+V \paren{x}
+    &= \minux{} \set { f_0 \paren{x,u} + \alpha V \paren{f \paren{x,u}} }
+\end{align*}
+
+\begin{optExample}{DP operator $T$}
+    \begin{align}
+        TV(.) &:= \minudot{} \set{ f_0 \paren{.,u} + \alpha V \paren{f \paren{.,u}} }
+    \end{align}
+    \begin{figure}[H]
+        \centering
+        \tikzsetnextfilename{dp-operator}
+        \begin{tikzpicture}
+            \def\h{1cm}
+            \node [block,text width=1*\h,minimum width=1*\h] (block) {$T$} ;
+            \node [note,left=\h of block] (V) {$V(.)$\\function} ;
+            \node [note,right=\h of block] (TV) {$TV(.)$\\function} ;
+            
+            \begin{scope}[arrow]
+                \draw (V) -- (block);
+                \draw (block) -- (TV);
+            \end{scope}
+        \end{tikzpicture}
+    \end{figure}
+    \begin{align}
+        T_{w(x)}V(x) &:= \set{ f_0 \paren{x,w(x)} + \alpha V \paren{f \paren{x,w(x)}} }
+    \end{align}
+\end{optExample}
+
+\paragraph{Properties} Let $V_1, V_2$ be some functions
+\begin{align}
+\intertext{contribution:}
+\norm{TV_1 - TV_2}_\infty &\leq \alpha \norm{V_1 - V_2}_\infty\\
+%
+\intertext{monotonity:}
+V_1 \geq V_2 &\Rightarrow TV_1 \geq TV_2\\
+%
+\nonumber \\
+\exists \Vbar{}: T\Vbar{} &= \Vbar{}\\
+%
+\intertext{iteration converges to unique fix point:}
+T \dots T(TV_1) &=: T^\infty V_1 = \Vbar{}
+\end{align}
+
+\paragraph{Remark}
+\begin{align*}
+\Vbar{} &= T\Vbar{} \quad ( \corresponds \txt{ DP equations})\\
+T^\infty V_1 &= \Vbar{}\\
+\left( V_2 \right. &:= \left. TV_1 \dots V_{k+1} = TV_k
+    \overset{k \rightarrow \infty}{\longrightarrow}
+    \Vbar{} \right),\txt{ note\footnotemark}
+\end{align*}
+\footnotetext{value function iteration algorithm}
+
+\paragraph{Proof}
+Banach space fixpoint theorem\\
+Let $\paren{X, \norm{.}}$ be a Banach space.\\
+Let $\Phi: X \rightarrow X$ be continuous and let
+$\norm{\Phi(x) - \Phi(y)} \leq \alpha \norm{x - y}, \alpha \in (0,1)$.\\
+Then there exists a unique fixpoint $x^* = \Phi(x^*)$ and $x_{k+1} = \Phi(x_k, x_k) \rightarrow x^*$.
+
+\begin{align*}
+V \paren{x} &= \norm{x - x^*}\\
+V \paren{x_{k+1}} - V \paren{x_k}
+    &= \norm{\Phi(x_k) - \Phi(x^*)} - \norm{x_k - x^*}\\
+    &\leq \alpha \norm{x_k - x^*} - \norm{x_k - x^*}
+    < 0\\
+    \intertext{(and the opt. feedback)}
+\norm{\min_{u} f(u) - \min_{u} g(u)}
+    &\leq \max_u \norm{f(u) - g(u)}
+\end{align*}~
+
+\paragraph{Value function iteration}
+\begin{itemize}
+\item Take any $V_0$
+\item Compute $V_{k+1} = TV_k$
+\item Iterate until `convergence'
+\end{itemize}
+
+\paragraph{Example}
+\begin{align*}
+\setX{} &= \set{\xi_1, \dots \xi_5} &\quad \txt{state space}\\
+\setU{} &= \set{0,1}    &\quad \txt{input space}
+\end{align*}~ 
+
+Dynamics:
+\begin{figure}[H]
+    \centering
+    \tikzsetnextfilename{dp-example-dynamics}
+    \centering    
+    \begin{tikzpicture}
+    \def\h{2cm}
+    \def\y{2cm}
+    \node (1) [circ] {$\xi_1$};
+    \node (2) [circ,right=1.5*\h of 1] {$\xi_2$};
+    \node (4) [circ,right=0.8*\h of 2] {$\xi_4$};
+    
+    \begin{scope}[arrow]
+    \draw (1) -- (2) 
+        node [pos=0.5,above] {$f_0 \paren{\xi_{.} , u=0}= 3$}
+        node [pos=0.5,below=\y,circ] (3) {$\xi_3$};
+    \draw (2) -- (4)
+        node [pos=0.5,above] {1}
+        node [pos=0.5,below=\y,circ] (5) {$\xi_5$};
+    \draw (1) -- (3)
+        node [pos=0.5,right] {2};
+    \draw (3) -- (4)
+        node [pos=0.5,above] {3};
+    \draw (3) -- (5)
+        node [pos=0.5,above] {1};
+    \draw (5) -- (4)
+        node [pos=0.5,right] {1};
+    \end{scope}
+    \end{tikzpicture}
+\end{figure}%
+%
+    \begin{align*}
+    V_1 &= V \paren{\xi_1}\\
+    \\
+    f \paren{\xi_1,u=0} &= \xi_2\\
+    f \paren{\xi_1,u=1} &= \xi_3\\
+    f \paren{\xi_2,u=0|1} &= \xi_4\\
+    &\vdots\\
+    f \paren{\xi_4,u=0|1} &= \xi_4\\
+    \end{align*}%
+    %
+\begin{align*}
+\txt{Cost: } &\sumk{k=0}{N = \infty} \underbrace{\paren{0.9}}_{\alpha}^k f_0 \paren{x_k, u_k}\\
+f_0 \paren{\xi_2, 0(1) = 1}
+\end{align*}
+\begin{align*}
+V &= \squareb{ V \paren{\xi_1} \dots V \paren{\xi_5} } = \squareb{V_1 \dots V_5}\\
+V^{\paren{k+1}} &= TV^{(k)}\\
+\\
+V \paren{\xinew{1}}
+    &= V_1^{\txt{new } (k+1)}\\
+    &= \min \set{ f_0 \paren{\xi_1,0} + 0.9 \underbrace{V_2^{\txt{old}}}_{ \txt{note}\footnotemark }, 2+ 0.9 V_3^{\txt{old}} }\\
+&\vdots\\
+V_2^{\txt{new}} &= \\
+&\vdots\\
+V_5^{\txt{new}} &= 
+\end{align*}
+\footnotetext{$V_2^{\txt{old}} = V \paren{f \paren{\xi_1,0}} = V \paren{\xi_2}$}
+\begin{align*}
+\intertext{MC:}
+\tund{V}{old} &= \begin{bmatrix}1 & 2 & 3 & 4 & 5\end{bmatrix}\\
+\tund{V}{new} &= \tund{V}{old}
+\end{align*}
+\begin{addmargin}[3em]{3em}
+for $i = 1:100$
+    \begin{addmargin}[3em]{3em}
+    $\tund{V}{new})1_ = \min \set{3 + \alpha \tund{V}{old}(2), 2 + \alpha \tund{V}{old}(3)}$\\
+    $\vdots$\\
+    $\tund{V}{now}(5) = \dots$\\
+    $\tund{V}{old} = \tund{V}{new}$
+    \end{addmargin}
+end
+\end{addmargin}
+
+\subsubsection{Policy iteration algorithm}
+\begin{align*}
+u = \squareb{u(\xi_1), u(\xi_2), \dots u(\xi_5)}
+\end{align*}
+\begin{enumerate}
+\item $u^0$ arbitrary (initial policy)
+\item Solve $V^* \paren{x} = Tu^k V^k(x)    \quad \forall ~x \in \setX{}$
+\item Solve
+    \begin{align*}
+        u^{k+1} &= \arg \paren{TV^k}\paren{x} \\
+                &= \argmin \set{f_0 \paren{x,u} + \alpha V^k\paren{f \paren{x,u}}}
+    \end{align*}
+\item Go to 2.
+\end{enumerate}
+\paragraph{Remark} $V^k \geq V^{k+1}$
+
+%\subsubsection{Principle of optimality}
+%\subsubsection{Dynamic programming recursion}
+
+\classDate{Fr.\\30/11/18}
+\subsubsection{Summary}
+\paragraph{Discrete time DP}
+\begin{align}
+\min \sum_{k=0}^{N-1} \alpha^k f_0 \paren{x_k, u_k} + \phi \paren{x_N}
+\end{align}
+\begin{align*}
+\st{} \quad
+    \x{k+1}    &= f \paren{x_k, u_k}    \quad k = 0 \dots N\\
+    u_k        &\in \setU{x_k}
+\end{align*}
+
+\paragraph{For $N < \infty$:} DP recursion
+\begin{gather*}
+    \begin{align}
+        & J \paren{k,x_k} \nonumber\\
+        = & \min_{u_k \in ~ \setU{x_k}}
+            \set{    \alpha^k f_0 \paren{x_k, u_k}
+                 + \underbrace{ J \paren{k+1, \x{k+1}} }_{\txt{cost to go}} }\\
+        & \st{} \quad \x{k+1}    = f \paren{x_k, u_k}    \quad k = 0 \dots N \nonumber
+    \end{align}\\~\\
+    \begin{align}
+        J \paren{N, x} &= \phi \paren{x}
+    \end{align}
+\end{gather*}~
+        
+\begin{itemize}    
+    \item Necessary and sufficient optimal condition
+        \begin{align}
+          &\txt{opt FB } \ubar{k, x_k} \nonumber \\
+        = &\argmin
+            \set{    \alpha^k f_0 \paren{x_k, u_k}
+                     + J \paren{k+1, \x{k+1}} }
+        \end{align}
+    \item Algorithms: discretisation\\
+            (Approximated Dynamic Programming / ADP
+            algorithm)\\
+            $\rightarrow$ curse of dimensionality
+\end{itemize}~ 
+    
+\paragraph{For $N = \infty \quad (\phi = 0) $:} DP (Bellman) equation
+%\paragraph{For $N = \infty \quad (\costT{} = 0)$: } DP (Bellman) equation
+\def\minFunc{\set{ f_0 \paren{x_k, u_k} + \alpha V \paren{\x{k+1}} }}
+\begin{alignat}{2}
+    V(x_k)
+      &=
+      & \min_{u_k \in ~ \setU{x_k}}
+      &    \minFunc \nonumber 
+    \end{alignat}
+    
+    \begin{itemize}
+    \item Necessary (and sufficient under additional assumptions) condition
+        \begin{align}
+        &\txt{opt FB } \ubar{x_k} \nonumber\\
+        = &\argmin \minFunc
+        \end{align}
+    \item Algorithms: fix point iteration algorithm
+            (+ discrete $\rightarrow$ ADP algorithm)\\
+            $\alpha \in (0,1)$
+    \end{itemize}
+    
+\paragraph{Remark} Mann iteration\\
+$T: \txt{Hilbert space} \rightarrow \setX{}$
+\begin{align*}
+        \x{k+1} &= (1 - \lambda_k)x_k
+            + \lambda_k T \paren{x_k}
+            \overset{k \rightarrow \infty}
+            {\longrightarrow} x^* \numberthis \\
+        T \paren{x^*} &= x^*, \exists ~ x^*,
+        \txt{if }
+        \norm{TV_1 - TV_2}
+        \overset{\alpha}{\leq} \norm{V_1 - V_2}
+\end{align*}~

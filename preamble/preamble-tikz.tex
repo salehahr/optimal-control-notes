@@ -1,0 +1,43 @@
+\usetikzlibrary{shapes,positioning,patterns,
+                    calc,fit,backgrounds,arrows.meta,
+                     decorations.pathmorphing,
+                     decorations.markings}
+    
+    
+    % % Arrows
+    \tikzset{
+        arrow/.style={draw,-{Latex[length=2.5mm]}},
+            }
+        
+    % % Control blocks
+    \tikzset{
+        block/.style={shape=rectangle,draw,semithick,
+            inner sep=2mm,minimum width=0.5cm,
+            text width=1cm,
+            align=flush center},
+        note/.style={
+            align=flush center
+            },
+        circ/.style={shape=circle,draw,semithick,
+            inner sep=2mm,minimum width=0.5cm,
+            text width=0.5cm,
+            align=left},
+        date/.style={circle,
+            semithick,%fill=white,draw=gray,
+            inner sep=2mm,minimum width=0.5cm,
+            text width=0.5cm},
+        comp/.style={shape=circle,inner sep=0mm,
+            minimum size=4mm,draw,semithick},
+        cout/.style={shape=circle,inner sep=0mm,
+            minimum size=1.5mm,fill=black,draw},
+         }
+ 
+ 
+    \newcommand{\classDate}[1]{
+    \tikzset{external/export next=false}
+    \begin{tikzpicture}[overlay,font=\tiny,align=left,
+        xshift={-1.5em},yshift={-1em}]
+        \node (date) [date] {};
+        \node at (date.center) [text=black!70!white] {\scshape\bfseries #1};
+    \end{tikzpicture}
+    }

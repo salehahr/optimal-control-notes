@@ -1,0 +1,231 @@
+\subsection{Discrete-time, finite-dimension DP}
+\begin{align}
+\min \sum_{k=k_0}^{N-1} f_0 \paren{k,x_k,u_k} + \phi \paren{N,x_N}
+\end{align}
+\begin{alignat*}{6}
+\st{} \quad
+&& x_{k+1} &= f \paren{k,x_k,u_k}\\
+&& u_k &\in \setU{k,x_k}
+\end{alignat*}%
+%
+\begin{definition}{(Optimal) cost to go}
+    \begin{align}
+        J^* \paren{k,x} &= \min_{u_j \in \setU{j,x_j} } \sum_{j=k}^{N-1} f_0 \paren{j,x_j, u_j} + \phi \paren{N,x_N}
+    \end{align}
+    ``optimal cost of endpiece''
+\end{definition}%
+%
+\begin{definition}{Optimal cost}
+    \begin{align}
+        J^* \paren{k_0,x} &= V \paren{x}
+    \end{align}
+    ``optimal value starting at point x''\\
+    optimal value function
+\end{definition}
+
+\paragraph{Theorem} Backward DP recursion\\
+\def\funcval{f_0 \paren{k,x,u} + \Jbar{k+1, f \paren{x,u,k}}}
+Let:
+\begin{align}
+    \Jbar{N,x} &= \phi \paren{N,x} \quad \forall ~x \in \R^n\\
+    \Jbar{k,x} &= \min_{u  \in \setU{k,x}} \set{ \funcval }
+\end{align}
+``Going backwards in time''\\
+$\because \Jbar{k,x} = f \paren{\dots k+1 \dots}$\\
+\begin{align*}
+    \ubar{k,x} &= \argmin \set{ \funcval  }
+\end{align*}~
+
+Then
+\begin{align}
+    J^* \paren{k,x} &= \Jbar{k,x}\\
+    u^* \paren{k,x} &= \ubar{k,x}
+\end{align}%
+%
+\paragraph{Proof} By induction
+\begin{align*}
+    J^* \paren{N,x} &= \phi \paren{N,x} = \Jbar{N,x} \quad \txt{by definition}\\
+    \\
+    J^* \paren{k+1,x} &= \Jbar{k+1,x}\\
+    \Rightarrow J^* \paren{k,x} &= \Jbar{k,x}\\
+        &= \min_{u_j} \set{ \sum_{j=k}^{N-1} f_0 \paren{j,x_j,u_j} + \phi \paren{N,x_N} }\\
+        &= \min_{u_{k\dots N-1}} \left\lbrace f_0 \paren{k,x_k,u_k} \right.\\
+            &\quad \left. + \min_u \set{\sum_{j=k+1}^{N-1} f_0 \paren{j,x_j,u_j} + \phi \paren{N,x_N} } \right\rbrace\\
+        & =\minuk{} \set{f_0 \paren{k,x_k,u_k} + \Jbar{k+1,\x{k+1}}}\\
+        & = \Jbar{k,x_k}
+\end{align*}
+
+\classDate{Mo.\\19/11/18\\exercise}
+%\subsection*{Exercise}
+
+\classDate{Fr.\\23//11/18}
+\paragraph{DP} $J^* \paren{x,k_0} = V(x) \quad \txt{value function}$
+\begin{align*}
+    \min \sum_{k=0}^{N-1} & f_0 \paren{x_k,u_k,k} + \phi \paren{x_N,N}\\
+    x_k &\in \R^n\\
+    u_k &\in \R^q
+    \\
+\txt{s.t.} \quad \x{k+1} &= f \paren{k,x_k,u_k},\quad k=k_0 \dots (N-1)\\
+    u_k &\in \setU{x_k,k} \subseteq \R^q\\
+    x_0 &= x
+\end{align*}%
+%
+\paragraph{Cost-to-go}
+\begin{align*}
+    \Jbar{x_k,k} &= \min \set{\sum_{j=k}^{N-1} f_0 \paren{x_j,u_j,j} + \phi \paren{x_N,N}}
+\end{align*}%
+%
+\paragraph{Backward DP recursion}
+If $\Jbar{} = \Jbar{x,k}$ such that
+\begin{align}
+    \Jbar{x,N} &= \phi \paren{x,N} \quad \forall ~ x\\
+    \Jbar{x_k,k} &= \minuk{} \left\lbrace f_0 \paren{x_k,u_k,k} \right. \nonumber \\
+        &\quad \left. + \Jbar{f\paren{k,x_k,u_k},k+1} \right\rbrace\\
+    \ubar{x_k,k} &= \argmin \left\lbrace f_0 \paren{x_k,u_k,k} \right. \nonumber\\
+        &\quad \left. + \Jbar{f\paren{k,x_k,u_k},k+1} \right\rbrace
+\end{align}
+then
+\begin{align}
+    \Jbar{k,x} &= J^* \paren{k,x} \forall ~ X, k = k_0 \dots N-1\\
+    \ubar{x,k} &= \txt{optimal feedback}
+\end{align}
+
+\begin{itemize}
+    \item (+) quite general, feedback, constructive (algorithm)
+    \item (-) computational complexity (solve a NLP for each $x \in \R^n$)\\
+        \lat{} discretisation \lat{} curse of dimensionality\\
+        no. grid points in state space = N, dim = n\\
+        {\color{red} $N^n$ points :( }
+    \item between analytic soln (LQR) --- brute force discretisation:\\
+        approximate DP lat{} approx. $\Jbar{}, \ubar{}, f$ by some basic function
+\end{itemize}
+
+\paragraph{PoO $\corresponds$ DP recursion} ($k_0 = 0$ without loss of generality)
+\begin{align*}
+    J^* \paren{0,x_0} &= \sum_{k=0}^{N-1} f_0 \paren{x^*_k,u^*_k,k} + \phi \paren{x^{*}_N, N}% \\
+    %& \overtxt{PoO}{=} \sum_{k=0}^{\overline{k}} f_0 \paren{x_k^*,u_k^*} + J^* \paren{\overline{k} + 1, \x{\overline{k} + 1}}
+\end{align*}
+
+\begin{figure}[H]
+    \centering
+    \def\svgwidth{0.8\columnwidth}
+    \input{./img/poo-dp.pdf_tex}
+\end{figure}
+
+\paragraph{Discretisation algo} (handout) \\
+Idea: discretise state space and input space\\
+\lat{} problem on a graph\\
+(no. of states is finite, production line problem)
+
+\paragraph{LQR -- analytic solution}
+\begin{align*}
+    \min \sum_{k=0}^{N-1} &x_k^T Q x_k + u_k^T R u_k + x_N^T S_N x_N ,\\
+    &\qquad \quad R>0, S_N \geq 0\\
+    \txt{s.t. } \quad & \x{k+1} = Ax_k + Bu_k = f \paren{x_k,u_k}
+\end{align*}
+
+\textbf{DP}: $(k=N)$\\
+Step 0:
+\begin{align*}
+    \left( \Jbar{x,k} \right. &=: \left. J \paren{x,k} \right)\\
+    \Jbar{x_N,N} &= x^T_NS_Nx_N
+\end{align*}
+
+Step 1: $(k=N-1)$
+\begin{gather*}
+\begin{align*}
+    &J \paren{x_{N-1},N-1}\\
+    = &\min_u \left\lbrace \quadr{\x{N-1}}{Q} + \quadr{u_{N-1}}{R} \right. \\
+    &\quad + \left. J \paren{\AxBu{N-1}, N} \right\rbrace\\
+    %
+    = &\min_u \left\lbrace \quadr{\x{N-1}}{Q} + \quadr{u_{N-1}}{R} \right. \\
+    &\quad + \left. \quadr{\paren{\AxBu{N-1}}}{S_N} \right\rbrace\\
+    %
+    = &\min_{u(x)} \left\lbrace \quadr{\x{N-1}}{\paren{Q + A^TS_NA}} \right.\\
+    &\quad + \quadr{u_{N-1}}{\underbrace{\paren{R + B^TS_NB}}_{>0}} \\
+    &\quad + \left. \x{N-1}^TA^TS_NBu_{N-1} + u_{N-1}^TB^TS_NA\x{N-1} \right\rbrace\\
+\end{align*}\\~\\
+\begin{align*}
+    \pde{u}\set{} &= 2\paren{R+B^TS_NB}u + 2B^TS_NAx \overset{!}{=} 0\\
+    u^* \paren{x} &= -\inv{\paren{R + R^TS_NB}} B^TS_NAx\\
+    u^* \paren{\x{N-1}} &= -K_{N-1}\x{N-1}
+\end{align*}\\
+~\\
+\begin{align*}
+    & J \paren{x,N-1}\\
+    = & x^T \left( Q + K_{N-1}^TRK_{N-1} \right. \\
+    &\quad \left. + \quadr{ \paren{A - BK_{N-1}} }{S_N} \right) x\\
+    & = \quadr{x}{S_{N-1}}
+\end{align*}
+\end{gather*}
+
+Because $J \paren{x,k}$ is $\forall~k$ always quadratic and $\ubar{x}$ can be computed analytically, a recursive (efficient/analytic) solution is feasible.
+
+\begin{align}
+\intertext{Ricatti equation, discrete time:}
+    S_{i-1} &= Q + K^T_{i-1}RK_{i-1} \nonumber \\
+        &\quad + \quadr{\paren{A - BK_i}}{S_i}\\
+    u^* \paren{i-1} &= - K_{i-1}\x{i-1} \nonumber\\
+        &= -\inv{\paren{R + B^TS_iB}} B^TS_i A\x{i-1}\\
+    J \paren{i-1,\x{i-1}} &= \x{i-1}^TS_{i-1} \x{i-1}
+\end{align}
+
+\begin{optExample}{Forward DP recursion}
+    \begin{align*}
+        \min \sum_{k=0}^{N-1}   &f_0 \paren{\x{k+1},u_k} + \underbrace{\phi \paren{x_0}}_{\txt{note\footnotemark}}\\
+        \txt{s.t.} \quad        &\x{k+1} = f \paren{x_k,u_k}
+    \end{align*}%
+    \tcblower
+    \begin{align}
+        & J_a\paren{k+1,\x{k+1}}\\
+        = & \min_u \set{ f_0 \paren{\x{k+1}, u_k} + J_a\paren{k,x_k} }
+        \label{eq:forward-dp}
+    \end{align}
+    \begin{variables}
+        J_a & arrival cost\\
+            & (summarises ``past cost'')\\
+        J_a (0,x) & optimal cost
+    \end{variables}
+    \footnotetext{Kalman filter / estimation: $\phi \paren{x_0} = \norm{x_0 - \xi}^2$, where $\xi$ is the initial guess/estimate of state.\\$f_0 = \norm{y_k - cx_k}^2 + \dots $}
+\end{optExample}
+
+\paragraph{Why correct?} time transformation
+\begin{gather*}
+    \begin{alignat*}{3}
+        \overline{k} &= N - k \quad & k &= 0 \dots N-1\\
+            && \overline{k} &= 1 \dots N
+    \end{alignat*}\\
+    \begin{align*}
+        x_k &= \xi_{\overline{k}} = \xi_{N-k}\\
+        \left( x_0 \right. &= \left. \xi_N, x_1 = \xi_{N-1}, \dots x_N = \xi_0 \right)\\
+        u_k &= \nu_{\overline{k}-1} = \nu_{N-k-1}\\
+        \left( u_0 \right. &= \left. \nu_{N-1}, u_1 = \nu_{N-2}, \dots u_{N-1} = \nu_0 \right)
+    \end{align*}
+\end{gather*}%
+%
+\begin{align*}
+      & \sum_{k=0}^{N-1}   f_0 \paren{\x{k+1},u_k} + \phi \paren{x_0}\\
+    = & \sum_{\overline{k}=1}^{N}   f_0 \paren{\xi_{\overline{k}-1},\nu_{\overline{k}-1}} + \phi \paren{\xi_N}\\
+    & \quad \txt{where } \xi_{\overline{k}-1} = f \paren{ \xi_{\overline{k}},\nu_{\overline{k}} }\\
+    & \qquad \qquad \xi_0 = x_N = f \paren{ \x{N-1}, u_{N-1} }\\
+    = & \sum_{\tilde{k}=0}^{N-1}   f_0 \paren{\xi_{\tilde{k}},\nu_{\tilde{k}}} + \phi \paren{\xi_N}\\
+    & \quad \txt{where } \xi_{\tilde{k}-1} = f \paren{ \xi_{\tilde{k}+1},\nu_{\tilde{k}} }\\
+    & \qquad \qquad g \paren{ \xi_k, \xi_{k+1}, \nu_k } = 0
+\end{align*}
+
+\begin{optExample}{Backward DP recursion}
+    \begin{align*}
+        J \paren{\ktild, \xi_\ktild} = &\min_{\nu_\ktild}  \set{ f_0 \paren{\xi_\ktild, \nu_\ktild} + J\paren{\ktild+1, \xi_{\ktild+1}}}\\
+        \txt{s.t.} \quad &\xi_\ktild  = f \paren{\xi_{\ktild+1}, \nu_\ktild}
+    \end{align*}%
+\end{optExample}%
+%
+\begin{align*}
+    \txt{Consider } \ktild &= N-1\\
+    x_1 &= \xi_{N-1}\\
+    u_0 &= \nu_{N-1}\\
+    \\
+    J \paren{N-1,x_1} &= \min_{u_0} \set{f_0 \paren{x_i,u_0} + J \paren{N, x_0}}\\
+    & \dots \txt{compare with \eqn{eq:forward-dp}}\\
+    \Rightarrow J_a\paren{k,x} &= J \paren{N - \ktild, x}
+\end{align*}

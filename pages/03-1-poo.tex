@@ -1,0 +1,243 @@
+\subsection{Principle of optimality}
+In NLP: principle of `exploring the neighbourhood'
+
+\paragraph{Example} ~\\
+Task: Find optimal route from Stuttgart to Graz.\\
+Optimal: fastest, shortest, cheapest, ...\\
+
+\begin{enumerate}
+    \item Suppose the optimal route
+    passes through Munich (M)\\
+    \begin{figure}[H]
+    \centering
+    \def\svgwidth{0.5\columnwidth}
+    \input{./img/stuttgart-graz.pdf_tex}
+    \end{figure}
+    Solution:
+    \begin{itemize}
+        \item split task into 2:
+        S \lat{} M, M \lat{} G
+        \item recursive solution
+    \end{itemize}~
+    
+    \item Find optimal route M \lat{} G
+    given the/an optimal route
+    S$~\overtext{M}{\rightarrow}~$G\\
+    
+    Solution: ``endpiece of optimal routes/trajectories are optimal''
+    \lat{} \textbf{principle of optimality}
+    \begin{itemize}
+        \item endpiece of 
+        S$~\overtext{M}{\rightarrow}~$G
+        is M \lat{} G
+        \item holds in general, but not always
+        (splitting of problems)
+    \end{itemize}
+\end{enumerate}
+
+\begin{definition}{Principle of optimality}
+``An optimal policy has the property that whatever the initial state and optimal first decision may be, the remaining decisions constitute an optimal policy w.r.t. the state resulting from the first decision.''\\
+-- (Bellman, 1957) 
+\end{definition}
+
+\begin{figure}[H]
+    \centering
+    \def\svgwidth{0.8\columnwidth}
+    \input{./img/poo.pdf_tex}
+\end{figure}
+
+\classDate{Fr.\\16/11/18}
+\textbf{Assumption}: cost sums up
+\begin{align*}
+    J^* \paren{A \lat X} &= \alpha\\
+    J^* \paren{X \lat B} &= \beta\\
+    \Rightarrow J^* \paren{A \lat B} &= \alpha + \beta
+\end{align*}
+
+\paragraph{Proof by contradiction}
+\begin{align*}
+    J \paren{A \lat B} &< J^* \paren{A \lat B}\\
+    \alpha + \beta ' &< \alpha + \beta
+\end{align*}
+
+\paragraph{Example} two production lines\\
+Cost: time or money
+
+\begin{figure}[H]
+    \tikzsetnextfilename{poo-prod-lines}
+    \centering
+    \def\s{0.5cm}    
+    \begin{tikzpicture}[
+        circ/.append style={fill=gray!30!white,minimum width=\s,text width=\s,inner sep=0mm},
+        k/.style={align=center,font=\footnotesize}
+        ]
+    \def\h{0.5cm}
+    \def\y{1cm}
+    \node (line0) [note] {line 0\\$x=0$};
+    \node (c1) [circ,right=\h of line0] {};
+    \node (c2) [circ,right=1.5*\h of c1] {};
+    \node (c3) [circ,right=1.5*\h of c2] {};
+    \node (c4) [circ,right=1.5*\h of c3] {};
+    
+    \node (line1) [note,below=\y of line0.center] {line 1\\$x=1$};
+    \node (c5) [circ,below=\y of c2.center] {};
+    \node (c6) [circ,right=1.5*\h of c5] {};
+    \node (c7) [circ,right=1.5*\h of c6] {};
+    \node (c8) [circ,right=1.5*\h of c7] {};
+    
+    \node (k0) [below=2*\y of c1,k] {$k=0,$};
+    \node (k1) [below=2*\y of c2,k] {1};
+    \node (k2) [below=2*\y of c3,k] {2};
+    \node (k3) [below=2*\y of c4,k] {3};
+    \node (k4) [below=\y of c8.center,k] {4=N};
+    
+    \begin{scope}[arrow]
+    \draw (c1) -- (c2) node [pos=0.5,above] {1};
+    \draw (c2) -- (c3) node [pos=0.5,above] {0};
+    \draw (c3) -- (c4) node [pos=0.5,above] {0};
+    \draw (c4) -- (c8) node [pos=0.5,above] {1};
+    
+    \draw (c1) -- (c5) node [pos=0.5,above] {2};
+    \draw (c5) -- (c6) node [pos=0.5,above] {3};
+    \draw (c6) -- (c7) node [pos=0.5,above] {0};
+    \draw (c7) -- (c8) node [pos=0.5,above] {2};
+    
+    \draw (c2) -- (c6) node [pos=0.5,above] {1};
+    \draw (c6) -- (c4) node [pos=0.1,above] {1};
+    
+    \draw (c5) -- (c3) node [pos=0.1,above] {2};
+    \draw (c3) -- (c7) node [pos=0.5,above] {1};
+    \end{scope}
+    \end{tikzpicture}
+\end{figure}%
+
+\begin{itemize}
+    \item Goal: find optimal (`shortest') path from start to end point.
+    \item Solution:
+        \begin{itemize}
+            \item Brute force
+            \item Solve backwards in time
+        \end{itemize}
+\end{itemize}
+
+\paragraph{Solution 1} brute force\\
+List all possible paths and pick the best one.\\
+\begin{itemize}
+    \item path = O XXX 1, $x \in \set{0,1}$\\
+        number of paths = $2^3=2^{N-1}$\\
+    \item If $M$ production lines:\\
+        number of paths = $M^{N-1} \qquad$ :(\\
+    \item Complexity\\
+    $\paren{M^{N-1}}\paren{N-1}
+    \approx \err\paren{NM^{N-1}}$ 
+\end{itemize}
+
+\paragraph{Solution 2} solving backwards\\
+(Optimal) cost-to-go (to endpoint): $J \paren{x,k}$
+\begin{align*}
+k=3 \qquad
+    J \paren{0,3} &= 1\\
+    J \paren{1,3} &= 2\\
+k=2 \qquad
+    J \paren{0,2}  &= \min \set{0 + J \paren{0,3}, 1 + J \paren{1,3}}\\
+                &= \min \set{0+1, 1+2} = 1\\
+    J \paren{1,2}  &= \min \set{1 + J \paren{0,3}, 0 + J \paren{1,3}}\\
+                &= \min \set{1+1, 0+2} = 2\\
+k=1 \qquad
+    J \paren{0,1}  &= \min \set{0 + J \paren{0,2}, 1 + J \paren{1,2}}\\
+                &= \min \set{0+1, 1+2} = 1\\
+    J \paren{1,1}  &= \min \set{2 + J \paren{0,2}, 3 + J \paren{1,2}}\\
+                &= \min \set{2+1, 3+2} = 3\\
+k=0 \qquad
+    J \paren{0,1}  &= \min \set{1 + J \paren{0,1}, 2 + J \paren{1,1}}\\
+                &= \min \set{1+1, 2+3} = 2\\
+\end{align*}
+
+\paragraph{Complexity} (count no. of +, -, min, max)
+\begin{itemize}
+    \item $N-1$ steps (backwards in stime)
+    \item for each production line: $2\cdot 2 \paren{M-2}$
+    \item for $M$ production lines: $M^2$\\
+\end{itemize}
+
+$\Sigma: \err\paren{M^2 N}$
+\paragraph{State space dynamics} ~ \\
+\begin{figure}[H]
+    \begin{align*}
+        x_k &= \set{0,1}\\
+        \x{k+1} &= x_k + u_k\\
+    \end{align*}
+    \tikzsetnextfilename{prod-line-ss}
+    \centering
+    \def\s{0.5cm}    
+    \begin{tikzpicture}[
+        circ/.append style={fill=gray!30!white,minimum width=\s,text width=\s,inner sep=0mm},
+        k/.style={align=center,font=\footnotesize}
+        ]
+        \def\h{1cm}
+        \def\y{1.5cm}
+        \node (c1) [circ] {};
+        \node (c1n) [note,above=1mm of c1] {$x_k=0$};
+        \node (c2) [circ,right=2*\h of c1] {};
+        \node (c2n) [note,above=1mm of c2] {$\x{k+1}=0$};
+        \node (c5) [circ,below=\y of c2.center] {};
+        \node (c5n) [note,above=1mm of c5] {$\x{k+1}=1$};
+    
+        \begin{scope}[arrow]
+            \draw (c1) -- (c2) node [pos=0.5,above,blue] {u=0};
+            \draw (c1) -- (c5) node [pos=0.5,left,blue] {u=1};
+        \end{scope}
+    \end{tikzpicture}
+\end{figure}%
+
+\begin{align*}
+    u_k &= \left\lbrace
+        \begin{array}{lll}
+            \set{0, 1} & x_k=0 & k=1 \dots N-2  \\
+            \set{0, -1} & x_k=1 
+        \end{array} \right.\\
+    u_0 &\in \set{0,1}\\
+    u_{N-1} &= \left\lbrace
+        \begin{array}{lll}
+            -1 & \x{N-1}=0  \\
+            0 & \x{N-1}=1 
+        \end{array} \right.
+\end{align*}
+
+\paragraph{Cost (stage cost $f_0$)}
+\begin{figure}[H]
+    \tikzsetnextfilename{prod-line-cost}
+    \centering
+    \def\s{0.5cm}    
+    \begin{tikzpicture}[
+        circ/.append style={fill=gray!30!white,minimum width=\s,text width=\s,inner sep=0mm},
+        k/.style={align=center,font=\footnotesize}
+        ]
+        \def\h{1cm}
+        \def\y{1.5cm}
+        \node (c1) [circ] {};
+        \node (c1n) [note,above=1mm of c1] {$x_2=0$};
+        \node (c2) [circ,right=2*\h of c1] {};
+        \node (c2n) [note,above=1mm of c2,red] {$f_0\paren{x_2,u_2=0,k=2}$};
+        \node (c5) [circ,below=\y of c2.center] {};
+        \node (c5n) [note,below=1mm of c5,red] {$f_0\paren{x_2,u_2=1,k=2}$};
+    
+        \begin{scope}[arrow]
+            \draw (c1) -- (c2) node [pos=0.5,below,blue] {$u_2=0$};
+            \draw (c1) -- (c5) node [pos=0.6,left,blue] {$u_2=1$};
+        \end{scope}
+    \end{tikzpicture}
+\end{figure}%
+\begin{align*}
+    \sum_{k=0}^{N-1} & f_0\paren{x_k,u_k,k}\\
+    \txt{s.t.} \quad \x{k+1} &= x_k + u_k\\
+            u_k &\in \setU{x_k}\\
+                &= \left\lbrace
+        \begin{array}{lll}
+            \set{0, 1} & x_k=0 & k=1 \dots N-2  \\
+            \set{0, -1} & x_k=1 
+        \end{array} \right.
+\end{align*}
+\begin{align*}
+    J \paren{k,x_k} &= \min_{u_k} \set{f_0\paren{x_k,u_k,k} + J \paren{k+1,\x{k+1}}}
+\end{align*}

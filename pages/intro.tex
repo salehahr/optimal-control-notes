@@ -1,0 +1,435 @@
+test
+% \section{Introduction}
+% \subsection{Optimal control problems}
+% 
+% Optimal control:
+% \begin{itemize}
+% \item Optimal decision making over time
+%         (over a time horizon)
+% \item Optimisation problems with dynamic systems
+%         (differential/difference equations),
+%         e.g. constraints are differential equations
+% \end{itemize}
+% 
+% \subsubsection{Ingredients of an optimal control problem}
+% \begin{enumerate}
+% \item Control system
+% \item Cost functional
+% \end{enumerate}
+% 
+% \paragraph{Control system}~\\
+% \begin{figure}[H]
+%     \centering
+%     \tikzsetnextfilename{control-system}
+%     \begin{tikzpicture}
+%     \def\h{1cm}
+%     \def\w{4cm}
+%     \node (block) [block,minimum width=\w,text width=\w]
+%         {$    \begin{aligned}
+%             \xd{t}             &= \func{x(t), u(t)}\\
+%             \bfunc{x}{k+1}    &= \func{x(k), u(k)}
+%             \end{aligned}$} ;
+%     \node (u) [left=\h of block.west] {$u(t)$\\$u(k)$};
+%     \node (x) [right=\h of block.east] {$x(t)$\\$x(k)$};
+%     
+%     \begin{scope}[arrow]
+%     \draw (u) -- (block);
+%     \draw (block) -- (x);
+%     \end{scope}
+%     \end{tikzpicture}
+%     \label{fig:control-system}
+% \end{figure}
+% 
+% \begin{itemize}
+% \item Generates possible behaviours
+% \item Described by ODEs of the form:
+% \end{itemize}
+% \begin{align}
+%     \xd{t}            &= \func{x(t), u(t)},
+%                     \quad x(t_0) = x_0
+%     \label{eq:control-system-cont} \\
+%     \bfunc{x}{k+1}    &= \func{x(k), u(k)}
+%     \label{eq:control-system-disc}
+% \end{align}
+% \begin{center}
+%     \begin{tabu} to \textwidth{>{$}l<{$} l >{$}l<{$}}
+%     x = x(t)    & state
+%                 & x \in \R{}^n\\
+%     u = u(t)    & control input
+%                 & u \in \R{}^q\\
+%     t            & time\\
+%     t_0            & initial time\\
+%     x_0            & initial state
+%     \end{tabu}
+% \end{center}~
+%         
+% \paragraph{Cost functional}%
+% \footnote{Functional:
+% maps a function to another function.
+% In this case: $J$ maps $u(t) \mapsto \int f_0(\dots$.}
+% 
+% \begin{itemize}
+% \item Associates a cost with each possible behaviour
+% \item For a given initial data $(t_0, x_0)$,
+%         the behaviours are parametrised by
+%         control functions $u(t)$
+% \item Assigns a cost value to each admissible control
+% \end{itemize}
+% 
+% \begin{align}
+% J(u) := \intdt{t_0}{t_f}{ \costR{t, x(t), u(t)} }
+%         + \costT{t_f, x_f}
+% \label{eq:cost-functional}
+% \end{align}
+% 
+% \begin{variables}
+% J                & objective/cost functional\\
+% \costR{}        & running/infinitesimal/incremental cost\\
+% \costT{}        & terminal cost\\
+% t_f                & final/terminal time\\
+% x_f := x(t_f)    & final/terminal state
+% \end{variables}
+% 
+% \subsubsection{Optimisation problem (calculus)}
+% \begin{center}
+% \begin{tcolorbox}
+%     [title=Optimisation problem,title filled=false,
+%     colframe=gray,
+%     colback=gray!20!white,
+%     width=0.75\textwidth]
+%     \begin{align}
+%     \min_{u} J(u) \corresponds  \max_{u} -J(u) 
+%     \label{eq:optimisation-problem}
+%     \end{align}
+%     \begin{align*}
+%     \subjTo{}
+%     h_i(u)    &= 0    & i = 1 \dots m\\
+%     g_i        &\leq 0    & j = 1 \dots M
+%     \end{align*}
+%     \tcblower
+%     \begin{center}
+%         \begin{tabu} to \textwidth{>{$}l<{$} l >{$}l<{$}}
+%         J    & objective/cost function
+%             & J: \R{}^n \rightarrow \R{}\\
+%         h_i    & equality constraint
+%             & h_i: \R{}^n \rightarrow \R{}\\
+%             & $h = \begin{bmatrix}
+%             h_1 & \cdots h_m
+%             \end{bmatrix}^T$\\
+%         g_i    & inequality constraint
+%             & g_i: \R{}^n \rightarrow \R{}
+%         \end{tabu}
+%     \end{center}
+% \end{tcolorbox}
+% \end{center}
+% 
+% \begin{minipage}{.65\textwidth}
+% \begin{itemize}
+% \item Decision/optimisation variables (unknown):\\
+% $u, x, t_0, t_f$
+% 
+% \item Feasible/admissible set
+%     \begin{align*}
+%     \txt{FS} = \left\lbrace
+%         u \in \R{}^n:
+%         \begin{array}{ll}
+%         h_i(u) = 0        & i = 1 \dots m\\
+%         g_i(u) \leq 0    & j = 1 \dots M
+%         \end{array}
+%         \right\rbrace
+%     \end{align*}
+%     
+% \item Solution:
+%     \uopt{} is a (global) solution of\\
+%     $\costOpt{} = J(\uopt{}) \leq J(u), ~ \forall ~ u
+%     \in \txt{FS}$
+% \end{itemize}
+% \end{minipage}~
+% \begin{minipage}{.34\textwidth}
+% \centering
+%     \begin{figure}[H]
+%         \centering
+%         \def\svgwidth{\textwidth}
+%         {\footnotesize
+%         \input{./img/local-minimum.pdf_tex}}
+%         \label{fig:local-minimum}
+% %        \caption{Optima of the cost functional $J(u)$}
+%     \end{figure}
+% \end{minipage}
+% 
+% \paragraph{Typical optimal control problem in continuous time}
+% \begin{center}
+% \begin{tcolorbox}
+%     [title=Optimisation problem -- continuous time,
+%     title filled=false,
+%     colframe=gray,
+%     colback=gray!20!white]
+%     \begin{align}
+%     \min_{u(.),~ x(.)}
+%      \intdt{t_0}{t_f}{ \costR{t, x(t), u(t)} }
+%             + \costT{t_f, x_f}
+%     \label{eq:optimisation-problem-cont}
+%     \end{align}
+%     \begin{center}
+%         \begin{minipage}{.59\textwidth}
+%         \centering
+%         \begin{align*}
+%             \txt{s.t.} \quad
+%             \xd{t}    &= \func{t, x(t), u(t)}\\
+%             x(t)    &\in \setX{} \subseteq \R{}^n\\
+%             u(t)    &\in \setU{} \subseteq \R{}^q\\
+%             x(t_0)    &= x_0 \in \setX{0}\\
+%             x(t_f)    &= x_f \in \setX{f}
+%         \end{align*}
+%         ~
+%         \begin{tabu} to \textwidth{>{$}l<{$} l >{$}l<{$}}    
+%         \setX{f}    & terminal/target set\\
+%         \setX{}        & state constraints
+%                     & \setX{} \subseteq \R{}^n\\
+%         \setU{}        & input constraints
+%                     & \setU{} \subseteq \R{}^q
+%         \end{tabu}
+%         \end{minipage}
+%         \begin{minipage}{.35\textwidth}
+%             \begin{figure}[H]
+%             \centering
+%             \def\svgwidth{\textwidth}
+%             \input{./img/state-constraints.pdf_tex}
+%             \label{fig:state-constraints}
+%         %    \caption{State constraints}
+%             \end{figure}
+%         \end{minipage}
+%     \end{center}
+%     \tcblower
+%     For all admissible $x(.), ~ u(.)$:
+%     \begin{align*}
+%     \costOpt{} = \bfunc{J}{\xopt{.},~ \uopt{.}}
+%         \leq \bfunc{J}{x(.), ~ u(.)}
+%     \Rightarrow
+%     \uopt{.},~ \xopt{.}
+%         \txt{ is a solution of } \costOpt{}
+%     \end{align*}
+% \end{tcolorbox}
+% \end{center}
+% 
+% 
+% \paragraph{Typical optimal control problem in discrete time}
+% \begin{center}
+% \begin{tcolorbox}
+%     [title=Optimisation problem -- discrete time,
+%     title filled=false,
+%     colframe=gray,
+%     colback=gray!20!white]
+%     \begin{align}
+%     \min
+%      \sum_{k=0}^{N}
+%         \costR{k, x(k), u(k)} + \costT{x(N)}
+%     \label{eq:optimisation-problem-disc}
+%     \end{align}
+%     \begin{align*}
+%     \subjTo{}
+%     x(k+1)    &= \func{k, x(k), u(k)}
+%             \quad k = 0, 1, \dots, N\\
+%     x(0)        &= x_0 \in \setX{0}\\
+%     x(N)        &= x_N \in \setX{f}
+%     \end{align*}
+%     \tcblower
+%     \begin{align*}
+%     \xopt{.}    &= \set{\xopt{1}, \dots, \xopt{N}}\\
+%     \uopt{.}    &= \set{\uopt{0}, \dots, \uopt{N-1}}\\
+%     \end{align*}
+% \end{tcolorbox}
+% \end{center}
+% 
+% \subsection{Topics/Tools}
+% \begin{itemize}
+% \item Nonlinear programming approach (NLP)
+% \item Dynamic programming (DP) -- constraints are dynamic
+% \item Receding horizon optimal control (MPC, MHE%
+%     \footnote{moving horizon estimate})
+% \item Pontryagin maximum principle (PMP)
+% \end{itemize}~
+% 
+% \begin{itemize}
+% \item Infinite vs. finite horizon\\
+%         \begin{tabu} to \textwidth{>{$}c<{$} >{$}c<{$}}
+%         t_f = \infty    & t_f < \infty\\
+%         N = \infty        & N < \infty
+%         \end{tabu}
+% \item Open loop vs. feedback
+% \item Continuous time vs. discrete time
+% \item Online (realtime) vs. offline computation
+% \end{itemize}
+% 
+% \subsection{Examples}
+% \subsubsection{Shortest path problem}
+%     \begin{minipage}{.6\textwidth}
+%     Robot unicycle model with constant velocity $v$
+%     \begin{align*}
+%     \dot{x} &= v \cos \theta\\
+%     \dot{y}    &= v \sin \theta\\
+%     \dot{\theta} &= u
+%     \end{align*}
+%     \vfill ~
+%     \end{minipage} \hfill
+%     \begin{minipage}{0.29\textwidth}
+%     \centering
+%     \def\svgwidth{\textwidth}
+%     \input{./img/unicycle-model.pdf_tex}
+%     \label{fig:unicycle-system}
+%     \end{minipage}
+% 
+% \textbf{Goal:}
+% Move robot along the shortest path
+% subject to angle/velocity constraints etc.
+% ($\therefore$ not a straight line).\\
+% 
+% \begin{figure}[H]
+% \centering
+%     \begin{subfigure}{.3\textwidth}
+% \textbf{Length of a curve:}
+%     \begin{align*}
+%     \Delta l_1 &= \sqrt{\Delta x^2 + \Delta y^2}\\
+%     x(h)    &= x(0) + \dot{x}(0)h + \dots\\
+%             &\approx x(0) + \Delta x\\
+%             \\
+%     \Delta x &\approx \dot{x}(0)h\\
+%     \Delta y &\approx \dot{y}(0)h
+%     \end{align*}
+%     \end{subfigure}
+%     \begin{subfigure}{.4\textwidth}
+%     \def\svgwidth{.7\textwidth}
+%     {\footnotesize
+%     \input{./img/curve-length.pdf_tex}    }
+%     \label{fig:curve-length}
+%     \end{subfigure}
+% \end{figure}
+% 
+% \begin{align*}
+% \Rightarrow
+% \Delta l_1 &= h \sqrt{\dot{x}^2(0) + \dot{y}^2(0)}\\
+% %\Delta l_2 &= h \sqrt{\dot{x}^2(h) + \dot{y}^2(h)}\\
+% \Delta l_i &= h \sqrt{\dot{x}^2((i-1)h) + \dot{y}^2((i-1)h)}\\
+%     &\vdots\\
+% %\Delta l_N &= h \sqrt{\dot{x}^2((N-1)h) + \dot{y}^2((N-1)h)}
+% l = 
+% \sum_{i=1}^{N} \Delta l_i &=
+%     \sum_{i=0}^{N-1} h \sqrt{\dot{x}^2(ih) + \dot{y}^2(ih)}\\
+% %%%%
+% \txt{For } h \rightarrow 0: \qquad
+% l &= \intdt{0}{t_f}{ \sqrt{\dot{x}^2(t) + \dot{y}^2(t)} }
+% \end{align*}
+% 
+% \example{Shortest path problem -- optimisation problem formulation}{
+% \begin{align*}
+% \min \intdt{0}{t_f}{ \sqrt{\dot{x}^2(t) + \dot{y}^2(t)} }
+% \end{align*}
+% \begin{center}
+%     \begin{tabu} to \textwidth{l >{$}l<{$} >{$}l<{$}}
+%     s.t.
+%     & x(0) = x_0    & x(t_f) = x_f\\
+%     & y(0) = y_0    & y(t_f) = y_f\\
+%     & \theta(0) = \theta_0    & \theta(t_f) = \theta_f\\
+%     \\
+%     d.v.
+%     & \multicolumn{2}{l}{$\quad x(t),~ y(t),~ \theta(t),~ u(t),~ t_f$}
+%     \end{tabu}
+% \end{center}
+% }
+% 
+% \begin{align*}
+% J(.)    &= \intdt{0}{t_f}{
+%              v \sqrt{\cos^2\theta + \sin^2\theta} }\\
+%         &= v t_f
+%         \corresponds \txt{time optimal control problem}
+% \end{align*}
+% 
+% \subsubsection{Time optimal control problem}
+% $t_f$ is the decision variable.
+% 
+% \example{Time optimal control problem formulation}{
+% \begin{align*}
+% \min_{t_f,~ u(.)} \intdt{0}{t_f}{ 1 } = t_f
+% \end{align*}
+% \begin{center}
+%     \begin{tabu} to \textwidth{l >{$}l<{$} >{$}l<{$}}
+%     s.t.
+%     & x,~ y,~ \theta = \dots\\
+%     & u \in [-1,1]\\
+%     \\
+%     d.v.
+%     & \multicolumn{2}{l}{$t_f$}
+%     \end{tabu}
+% \end{center}
+% }
+% Finite horizon, time-optimal, open-loop OC problem
+% 
+% \subsubsection{Liear quadratic regulator problem
+% (LQR)}
+% \begin{itemize}
+% \item Given: $\dot{x} = Ax + Bu$
+% \item Find: feedback $\uopt{} = \bfunc{k^*}{x,t}$ such that
+%         \begin{itemize}
+%         \item The closed loop solution
+%             $\xopt{t},~ \uopt{t}$ minimises $J$\\
+%             (infinite horizon, closed loop)
+%             \begin{align*}
+%             \min \intdt{0}{\infty}{ 
+%                 x^T(t)Qx(t) + u^T(t)Ru(t) }
+%             \end{align*}
+%         \item The closed loop is asymptotically stable
+%         with respect to $x=0$
+%         \end{itemize}
+% 
+% \item $Q$ and $R$ are positive definite matrices,
+% i.e. their eigenvalues are positive
+%     \begin{align*}
+%     Q &= Q^T > 0\\
+%     R &= R^T > 0
+%     \end{align*}
+% \item 1D:\\
+%     \begin{tabu} to \textwidth{>{$}l<{$} >{$}l<{$}}
+%     x \in \R{}    & u \in \R{}\\
+%     Q \rightarrow q        & R \rightarrow r\\
+%     q > 0            & r > 0
+%     \end{tabu}
+%     
+%     \begin{align*}
+%     J = \intdt{0}{\infty}{qx^2 + ru^2}
+%     \end{align*}
+%     
+%     \begin{enumerate}
+%     \item Control energy
+%             \begin{align*}
+%             \intdt{0}{\infty}{ ru^2 }
+%             \end{align*}
+%             e.g.
+%             \begin{figure}[H]
+%             \centering
+%             \begin{tikzpicture}
+%             \def\h{1cm}
+%             \def\v{1em}
+%             \node (R) [block] {};
+%             \node (i) [left=\h of R.west] {};
+%             \node [below=\v of R.center] {$R$};
+%             \node [above=\v of R.center] {$u_R$};
+%             
+%             \begin{scope}[draw]
+%             \draw (i) -- (R.west) node [pos=0.5,below] {$i$};
+%             \draw (R.east) -- ++(\h,0);
+%             \end{scope}                    
+%             \end{tikzpicture}
+%             \end{figure}
+%             
+%             Input $u = i$
+%             \begin{align*}
+%             \Rightarrow    \quad P&= Ri^2 = Ru^2\\
+%             \Rightarrow \quad E&= \int Ru^2 dt
+%             \end{align*}
+%             
+%     \item Penalisation of deviation from $x_0$
+%             \begin{align*}
+%             \intdt{0}{\infty}{ qx^2 }
+%             \end{align*}
+%     \end{enumerate}
+% \end{itemize}

@@ -1,0 +1,63 @@
+%% Creator: Inkscape inkscape 0.92.1, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'poo.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{377.89616622bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.61098019)%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{poo.pdf}}%
+    \put(0.18756955,0.59114465){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{start A}}}%
+    \put(0.92460566,0.21665824){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{end B}}}%
+    \put(0.29369406,0.39214435){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$x$}}}%
+    \put(0.15005206,0.31205702){\color[rgb]{0.42352941,0.44705882,1}\makebox(0,0)[rb]{\smash{$\tilde{x}$}}}%
+    \put(0.12678734,0.06228694){\color[rgb]{0.42352941,0.44705882,1}\makebox(0,0)[lt]{\begin{minipage}{0.3075091\unitlength}\centering optimal path w.r.t. $\tilde{x}$\end{minipage}}}%
+    \put(0.2187982,0.59061662){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$k=0$}}}%
+    \put(0.352441,0.46194537){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$k=1$}}}%
+    \put(0.5915251,0.47634609){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.31690432\unitlength}\raggedright optimal path w.r.t. $x$\end{minipage}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{poo.pdf}}%
+  \end{picture}%
+\endgroup%

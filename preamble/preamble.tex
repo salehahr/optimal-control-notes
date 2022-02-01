@@ -1,0 +1,162 @@
+% LANGUAGE / TYPESETTING
+    \usepackage[UKenglish]{babel}
+    \usepackage[english]{varioref}
+    
+%    % Input of special characters e.g. áüó
+%    % To be loaded before csquotes
+%    \usepackage[utf8]{inputenc}
+    % Glyph adjust,
+    \usepackage[T1]{fontenc}
+    % Workaround for fontenc making everything ugly..
+    \usepackage{lmodern} 
+    % Input "    
+    \usepackage[autostyle=true]{csquotes}    
+    \MakeOuterQuote{"}
+    
+    % Serif font (text and math) (optional)
+    \usepackage[osf]{mathpazo}
+    
+    \widowpenalty10000                        % No widows
+    \clubpenalty10000                        % No orphans
+    
+    
+%% MARGINS
+    \setlength{\columnsep}{1.3cm}
+    \usepackage[top=2cm,bottom=2cm,
+                left=1.5cm,right=1.5cm,
+                bindingoffset=15mm]{geometry}                        
+    % Removes paragraph indentation
+    \setlength{\parindent}{0pt}    
+    % Removes justification
+    \usepackage{ragged2e}
+    \raggedbottom
+
+    
+%% HEADER / FOOTER
+    % Clears header footer
+    \usepackage{scrlayer-scrpage}
+    \clearscrheadfoot
+    % Sets header                                    
+    \rohead[\footnotesize{\thepage}]{%$\cdot$~
+                    \footnotesize{\thepage}%~~$\cdot$
+                    }                                        
+    \rehead[\footnotesize{\thepage}]{%$\cdot$~
+                    \footnotesize{\thepage}%~~$\cdot$
+                    }
+                    
+%% CHAPTER HEADINGS
+    \makeatletter
+    \@addtoreset{section}{part}
+    \makeatother     
+
+    \addtokomafont{disposition}{\rmfamily}
+                    
+
+%% MATH
+    \usepackage{amsmath}
+    \usepackage{amssymb}
+    \usepackage{mathabx}
+    \usepackage{cancel}
+    
+    % Prevents too many alphabets error
+    \newcommand\hmmax{0}
+    \newcommand\bmmax{0}    
+    \usepackage{bm}
+    
+    \usepackage{siunitx}
+        \sisetup{
+            tight-spacing           = true,
+            round-mode              = places,
+            round-precision         = 2,
+            table-align-text-pre    = false,
+            output-decimal-marker   = {.},
+            group-separator         = {,},
+            }
+    
+    \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+
+%% GRAPHICS
+    \usepackage{graphicx}                % Enables includegraphics
+    \usepackage{subcaption}
+    \usepackage{xcolor}
+    \usepackage{transparent}
+    \usepackage[labelfont=bf]{caption}    % Caption format
+    \usepackage{float}                    % Position of floats
+    \graphicspath{    {./img/}
+                    }                    % Graphics folder path
+    \usepackage{tikz}
+    \usetikzlibrary{external}
+    \tikzexternalize[prefix=img/]    
+% Usage: \tikzexternaldisable \tikzexternalenable \tikzsetnextfilename{blah}    
+    \input{./preamble/preamble-tikz}
+    
+    
+%% TABLES
+    \usepackage{tabu}
+%    \usepackage{longtable}
+    \usepackage{booktabs}
+    \usepackage{multirow}    
+    % Row style
+    % requires array
+    \newcolumntype{+}{>{\global\let\currentrowstyle\relax}} 
+    \newcolumntype{^}{>{\currentrowstyle}}
+    % Bold column doesn't play nice with bmatrix
+%    \newcolumntype{*}{>{\bfseries}}
+    \newcommand{\rowstyle}[1]{\gdef\currentrowstyle{#1}%
+      #1\ignorespaces}
+
+
+%% PROGRAMMING
+    \usepackage{xstring}
+
+
+%% LISTS
+    \usepackage{enumitem}
+        % spacing b/w list items
+        \setlist{nolistsep}    
+        \setlist[enumerate,1]
+                % list indentation
+                {labelindent=0.5cm,leftmargin=*}
+                
+    
+%% TABLE OF STUFF
+%    \usepackage[titles]{tocloft}
+%        \newlength{\figlength}
+%        \renewcommand{\cftfigpresnum}{\figurename\enspace}
+%        \renewcommand{\cftfigaftersnum}{:\enspace}
+%        \settowidth{\figlength}{\cftfigpresnum\cftfigaftersnum}
+%        \addtolength{\cftfignumwidth}{\figlength}
+%        
+%        \newlength{\tablength}
+%        \renewcommand{\cfttabpresnum}{\tablename\enspace}
+%        \renewcommand{\cfttabaftersnum}{:}
+%        \settowidth{\tablength}{\cfttabpresnum\cfttabaftersnum}
+%        \addtolength{\cfttabnumwidth}{\tablength}
+    
+    
+%% CITATIONS / BIBLIOGRAPHY
+%    \usepackage[maxcitenames=10,
+%                backend=biber,
+%                sorting=nty,
+%                date=year,
+%                sortcites=true,
+%                ]{biblatex}
+%    \addbibresource{./preamble/ref.bib}
+%    \input{./preamble/bibstyle}
+%    % URL font
+%    \renewcommand{\UrlFont}{\rmfamily\footnotesize}
+        
+        
+%% DOCUMENT PROPERTIES
+%    \usepackage{hyperref}
+%    \hypersetup{    pdftitle = {Optimal Control Notes},
+%                    pdfauthor = {S},
+%                    pdfstartview = {XYZ null null 1.0},
+%                    bookmarksnumbered = true,
+%                    bookmarksopen = true,
+%                    colorlinks,
+%                    linkcolor={red},
+%                    citecolor={red},
+%                    urlcolor={red},
+%                    }

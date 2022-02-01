@@ -1,0 +1,290 @@
+% This file was created by matlab2tikz.
+%
+%The latest updates can be retrieved from
+%  http://www.mathworks.com/matlabcentral/fileexchange/22022-matlab2tikz-matlab2tikz
+%where you can also make suggestions and rate matlab2tikz.
+%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=0.951\figurewidth,
+height=0.199\figurewidth,
+at={(0\figurewidth,0.276\figurewidth)},
+scale only axis,
+xmin=0.000,
+xmax=5.000,
+xlabel style={font=\color{white!15!black}},
+xlabel={$t$ in s},
+ymin=-2.000,
+ymax=0.500,
+ylabel style={font=\color{white!15!black}},
+ylabel={$x_1$},
+axis background/.style={fill=white},
+title style={font=\bfseries},
+title={Continuous system with $u^*$ -- state $x_1$},
+legend style={at={(0.97,0.03)}, anchor=south east, legend cell align=left, align=left, draw=white!15!black}
+]
+\addplot [color=white!40!black, line width=1.0pt]
+  table[row sep=crcr]{%
+0.000    -2.000\\
+0.100    -1.970\\
+0.200    -1.888\\
+0.300    -1.773\\
+0.500    -1.498\\
+0.800    -1.081\\
+1.000    -0.841\\
+1.200    -0.642\\
+1.400    -0.483\\
+1.600    -0.359\\
+1.800    -0.263\\
+2.000    -0.192\\
+2.200    -0.138\\
+2.400    -0.099\\
+2.700    -0.059\\
+3.100    -0.029\\
+3.600    -0.012\\
+4.400    -0.002\\
+5.000    0.001\\
+};
+\addlegendentry{cont}
+
+\addplot [color=white!40!black, dashed, line width=2.0pt]
+  table[row sep=crcr]{%
+0.000    -2.000\\
+0.100    -1.970\\
+0.200    -1.888\\
+0.300    -1.773\\
+0.500    -1.498\\
+0.800    -1.081\\
+1.000    -0.841\\
+1.200    -0.642\\
+1.400    -0.483\\
+1.600    -0.359\\
+1.800    -0.263\\
+2.000    -0.192\\
+2.200    -0.138\\
+2.400    -0.099\\
+2.700    -0.059\\
+3.100    -0.029\\
+3.600    -0.012\\
+4.400    -0.002\\
+5.000    0.001\\
+};
+\addlegendentry{disc}
+
+\end{axis}
+
+\begin{axis}[%
+width=0.951\figurewidth,
+height=0.199\figurewidth,
+at={(0\figurewidth,0.551\figurewidth)},
+scale only axis,
+xmin=0.000,
+xmax=5.000,
+xlabel style={font=\color{white!15!black}},
+xlabel={$t$ in s},
+ymin=0.000,
+ymax=0.000,
+ylabel style={font=\color{white!15!black}},
+ylabel={$\varepsilon$},
+axis background/.style={fill=white},
+title style={font=\bfseries},
+title={Absolute error},
+legend style={at={(0.03,0.97)}, anchor=north west, legend cell align=left, align=left, draw=white!15!black}
+]
+\addplot [color=white!40!black, mark size=1.5pt, mark=*, mark options={solid, fill=white!40!black, white!40!black}]
+  table[row sep=crcr]{%
+0.000    0.000\\
+0.100    0.000\\
+0.200    0.000\\
+0.300    0.000\\
+0.400    0.000\\
+0.500    0.000\\
+0.600    0.000\\
+0.700    0.000\\
+0.800    0.000\\
+0.900    0.000\\
+1.000    0.000\\
+1.100    0.000\\
+1.200    0.000\\
+1.300    0.000\\
+1.400    0.000\\
+1.500    0.000\\
+1.600    0.000\\
+1.700    0.000\\
+1.800    0.000\\
+1.900    0.000\\
+2.000    0.000\\
+2.100    0.000\\
+2.200    0.000\\
+2.300    0.000\\
+2.400    0.000\\
+2.500    0.000\\
+2.600    0.000\\
+2.700    0.000\\
+2.800    0.000\\
+2.900    0.000\\
+3.000    0.000\\
+3.100    0.000\\
+3.200    0.000\\
+3.300    0.000\\
+3.400    0.000\\
+3.500    0.000\\
+3.600    0.000\\
+3.700    0.000\\
+3.800    0.000\\
+3.900    0.000\\
+4.000    0.000\\
+4.100    0.000\\
+4.200    0.000\\
+4.300    0.000\\
+4.400    0.000\\
+4.500    0.000\\
+4.600    0.000\\
+4.700    0.000\\
+4.800    0.000\\
+4.900    0.000\\
+5.000    0.000\\
+};
+\addlegendentry{$\varepsilon_1$}
+
+\addplot [color=black, mark size=1.5pt, mark=*, mark options={solid, fill=black, black}]
+  table[row sep=crcr]{%
+0.000    0.000\\
+0.100    0.000\\
+0.200    0.000\\
+0.300    0.000\\
+0.400    0.000\\
+0.500    0.000\\
+0.600    0.000\\
+0.700    0.000\\
+0.800    0.000\\
+0.900    0.000\\
+1.000    0.000\\
+1.100    0.000\\
+1.200    0.000\\
+1.300    0.000\\
+1.400    0.000\\
+1.500    0.000\\
+1.600    0.000\\
+1.700    0.000\\
+1.800    0.000\\
+1.900    0.000\\
+2.000    0.000\\
+2.100    0.000\\
+2.200    0.000\\
+2.300    0.000\\
+2.400    0.000\\
+2.500    0.000\\
+2.600    0.000\\
+2.700    0.000\\
+2.800    0.000\\
+2.900    0.000\\
+3.000    0.000\\
+3.100    0.000\\
+3.200    0.000\\
+3.300    0.000\\
+3.400    0.000\\
+3.500    0.000\\
+3.600    0.000\\
+3.700    0.000\\
+3.800    0.000\\
+3.900    0.000\\
+4.000    0.000\\
+4.100    0.000\\
+4.200    0.000\\
+4.300    0.000\\
+4.400    0.000\\
+4.500    0.000\\
+4.600    0.000\\
+4.700    0.000\\
+4.800    0.000\\
+4.900    0.000\\
+5.000    0.000\\
+};
+\addlegendentry{$\varepsilon_2$}
+
+\end{axis}
+
+\begin{axis}[%
+width=0.951\figurewidth,
+height=0.199\figurewidth,
+at={(0\figurewidth,0\figurewidth)},
+scale only axis,
+xmin=0.000,
+xmax=5.000,
+xlabel style={font=\color{white!15!black}},
+xlabel={$t$ in s},
+ymin=-1.522,
+ymax=0.000,
+ylabel style={font=\color{white!15!black}},
+ylabel={$x_2$},
+axis background/.style={fill=white},
+title style={font=\bfseries},
+title={Continuous system with $u^*$ -- state $x_2$},
+legend style={at={(0.97,0.03)}, anchor=south east, legend cell align=left, align=left, draw=white!15!black}
+]
+\addplot [color=black, line width=1.0pt]
+  table[row sep=crcr]{%
+0.000    -1.000\\
+0.100    -1.295\\
+0.200    -1.457\\
+0.300    -1.522\\
+0.400    -1.520\\
+0.500    -1.471\\
+0.600    -1.392\\
+0.700    -1.295\\
+1.200    -0.768\\
+1.300    -0.677\\
+1.400    -0.594\\
+1.500    -0.519\\
+1.600    -0.451\\
+1.700    -0.391\\
+1.800    -0.338\\
+1.900    -0.291\\
+2.000    -0.250\\
+2.200    -0.183\\
+2.400    -0.133\\
+2.600    -0.096\\
+2.800    -0.068\\
+3.100    -0.041\\
+3.400    -0.024\\
+3.800    -0.012\\
+4.400    -0.004\\
+5.000    -0.002\\
+};
+\addlegendentry{cont}
+
+\addplot [color=black, dashed, line width=2.0pt]
+  table[row sep=crcr]{%
+0.000    -1.000\\
+0.100    -1.295\\
+0.200    -1.457\\
+0.300    -1.522\\
+0.400    -1.520\\
+0.500    -1.471\\
+0.600    -1.392\\
+0.700    -1.295\\
+1.200    -0.768\\
+1.300    -0.677\\
+1.400    -0.594\\
+1.500    -0.519\\
+1.600    -0.451\\
+1.700    -0.391\\
+1.800    -0.338\\
+1.900    -0.291\\
+2.000    -0.250\\
+2.200    -0.183\\
+2.400    -0.133\\
+2.600    -0.096\\
+2.800    -0.068\\
+3.100    -0.041\\
+3.400    -0.024\\
+3.800    -0.012\\
+4.400    -0.004\\
+5.000    -0.002\\
+};
+\addlegendentry{disc}
+
+\end{axis}
+\end{tikzpicture}%

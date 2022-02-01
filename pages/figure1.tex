@@ -1,0 +1,32 @@
+\def\rad{1.1cm}
+\def\gupw{10pt}
+\def\guph{0.5cm}
+\def\mshift{1.5cm}
+\begin{tikzpicture}[
+    w1/.style={shape=circle,minimum size=2*\rad,text width=2cm,
+                inner sep=0pt,outer sep=0pt,
+                draw,semithick,align=flush center,
+                font=\footnotesize},
+    ]
+% Wagen W1
+\node (w1) [w1]
+    {\textbf{W1}\\Motor, Getriebe, Ritzel};
+    
+% Ground
+\node [ground,minimum width=3cm,below=0cm of w1.south] (ground) {};
+\draw (ground.north east) -- (ground.north west);
+
+\node (gup) [ground,minimum height=\guph,minimum width=\gupw,
+            above=\guph of w1.north,
+            xshift=-0.5*\gupw] {};
+\draw (gup.south east) -- (gup.north east);
+
+% Traegheit
+\draw [arrow] (gup.east) arc (90:45:\rad+\guph)
+        node [above=10pt,pos=0.9] {$\varphi, \omega, \alpha$};
+
+% Motormoment
+\node at ($(w1) +(50:\mshift)$) (Mm) {};
+\draw [force] (Mm) arc (50:-10:\mshift)
+        node [right=5pt,pos=0.5] {$M_M1$};
+\end{tikzpicture}
